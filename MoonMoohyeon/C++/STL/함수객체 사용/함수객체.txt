@@ -1,0 +1,17 @@
+plus<T>	덧셈 (x + y)	plus<int>()(10, 5) -> 15
+minus<T>	뺄셈 (x - y)	minus<int>()(10, 5) -> 5
+multiplies<T>	곱셈 (x * y)	multiplies<int>()(10, 5) -> 50
+divides<T>	나눗셈 (x / y)	divides<int>()(10, 5) -> 2
+modulus<T>	나머지 (x % y)	modulus<int>()(10, 3) -> 1
+negate<T>	부호 반전 (-x) (인자가 하나)	negate<int>()(10) -> -10
+
+equal_to<T>	같음 (x == y)	equal_to<int>()(10, 5) -> false
+not_equal_to<T>	같지 않음 (x != y)	not_equal_to<int>()(10, 5) -> true
+greater<T>	보다 큼 (x > y)	greater<int>()(10, 5) -> true
+less<T>	보다 작음 (x < y)	less<int>()(10, 5) -> false
+greater_equal<T>	크거나 같음 (x >= y)	greater_equal<int>()(10, 5) -> true
+less_equal<T>	작거나 같음 (x <= y)	less_equal<int>()(10, 10) -> true
+
+logical_and<T>	논리 AND (x && y)	logical_and<bool>()(true, false) -> false
+logical_or<T>	논리 OR (`x	
+logical_not<T>	논리 NOT (!x) (인자가 하나)
