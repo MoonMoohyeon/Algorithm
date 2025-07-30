@@ -1,8 +1,7 @@
 #include <iostream>
 #include <vector>
-#include <algorithm> // sort 함수 사용을 위해 포함
+#include <algorithm>
 
-// 각 작업을 표현하는 구조체
 struct Job {
     char id;      // 작업 ID
     int deadline; // 마감일
