@@ -41,5 +41,11 @@ int main(int argc, char** argv) {
         cout << i << endl;
     }
 
+    // 소수점 출력하기
+    cout << fixed;
+    cout.precision(3); // 소수점 3자리까지 출력
+    // cout << fixed가 없으면, 소수점이 아니라 전체 숫자를 3개까지 출력하게 됨.
+    cout.unsetf(ios::fixed); // 소수점 제한 해제
+
     return 0;
 }
