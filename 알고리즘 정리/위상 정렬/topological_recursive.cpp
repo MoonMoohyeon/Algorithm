@@ -2,10 +2,6 @@
 #include <vector>
 #include <queue>
 
-// using namespace std; // 전역 using namespace는 충돌을 유발할 수 있어 명시적으로 사용
-
-// --- 전역 변수 선언부 ---
-// adj: 인접 리스트 방식의 그래프. adj[A]는 A가 가리키는 노드들의 목록을 저장합니다.
 std::vector<int> adj[32001]; 
 // indegree: 각 노드의 진입 차수. 자신을 가리키는 간선의 개수를 의미합니다.
 // 어떤 노드의 진입 차수가 0이라는 것은 모든 선수과목/선행작업이 완료되었음을 뜻합니다.
@@ -45,20 +41,18 @@ void topology_recursive(int node)
 
 int main(void)
 {
-    // C++ 입출력 속도 향상을 위한 설정
     std::ios_base::sync_with_stdio(false);
     std::cin.tie(NULL);
 
-    int N, M; // N: 노드(학생)의 수, M: 간선(키 비교)의 수
+    int N, M;
     std::cin >> N >> M;
 
-    // M개의 간선 정보를 입력받아 그래프를 구성하고 진입 차수를 계산합니다.
     for (int i = 0; i < M; i++)
     {
         int a, b;
         std::cin >> a >> b;
-        adj[a].push_back(b); // a에서 b로 가는 간선 추가 (a가 b 앞에 서야 함)
-        indegree[b]++;       // b의 진입 차수 1 증가
+        adj[a].push_back(b);
+        indegree[b]++;
     }
 
     // --- 위상 정렬 시작 ---
