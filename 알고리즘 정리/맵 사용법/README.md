@@ -310,6 +310,248 @@ Key 30보다 작거나 같은 마지막 원소는 {30, C} 입니다.
 
 -----
 
+`multimap`을 사용할 때는 주의해야 할 점이 명확합니다.
+
+### \#\# 한눈에 보는 핵심 차이점
+
+| 특징 / 함수 | `map` | `unordered_map` | `multimap` |
+| :--- | :--- | :--- | :--- |
+| **키(Key) 중복** | **불가능** | **불가능** | **가능** ⭐️ |
+| **`[]` 연산자** | 사용 가능 | 사용 가능 | **사용 불가** ⚠️ |
+| **`insert()`** | (key, value) 삽입 | (key, value) 삽입 | (key, value) 항상 삽입 |
+| **`find(key)`** | key에 해당하는 단일 원소 반환 | key에 해당하는 단일 원소 반환 | key에 해당하는 **첫 번째** 원소 반환 |
+| **`count(key)`** | 0 또는 1 반환 | 0 또는 1 반환 | **0, 1, 또는 그 이상** 반환 |
+| **`equal_range(key)`** | 유용하지만 잘 안 씀 | 유용하지만 잘 안 씀 | **매우 중요하고 유용함** ✅ |
+| **정렬 여부** | Key 기준 자동 정렬 | 정렬 안 됨 | Key 기준 자동 정렬 |
+
+-----
+
+### \#\# 1. 키 중복 허용과 `multimap`의 존재 이유 🔑
+
+가장 근본적인 차이는 **`multimap`은 키의 중복을 허용한다**는 점입니다.
+
+  * `map`, `unordered_map`: 하나의 키는 오직 하나의 값만 가집니다. (1:1 관계)
+      * 예: `{"사과": 1000원}`
+  * `multimap`: 하나의 키가 여러 개의 값을 가질 수 있습니다. (1:N 관계)
+      * 예: `{"연락처": "010-1111-1111", "연락처": "02-222-2222"}` (동일인에게 여러 연락처)
+
+이 차이 때문에 다른 멤버 함수의 동작 방식이 달라집니다.
+
+-----
+
+### \#\# 2. 가장 주의해야 할 차이: `[]` 연산자 ⚠️
+
+**`multimap`에서는 `[]` 연산자를 사용할 수 없습니다.**
+
+`map`이나 `unordered_map`에서 `m[key]`는 `key`에 해당하는 **유일한** 값의 참조를 반환합니다. 하지만 `multimap`은 `key`에 해당하는 값이 여러 개일 수 있으므로, 어떤 것을 반환해야 할지 모호합니다. 이 모호성 때문에 `multimap`에서는 `[]` 연산자가 아예 제공되지 않습니다.
+
+`multimap`에 원소를 추가하려면 반드시 `insert()` 함수를 사용해야 합니다.
+
+```cpp
+#include <map>
+#include <string>
+
+int main() {
+    std::multimap<std::string, int> mm;
+
+    // OK: insert() 사용
+    mm.insert({"apple", 10});
+    mm.insert({"apple", 20}); 
+
+    // ERROR: [] 연산자 사용 불가 (컴파일 에러 발생)
+    // mm["apple"] = 30; 
+    
+    return 0;
+}
+```
+
+-----
+
+### \#\# 3. 중복 키를 다루는 특별한 방법: `equal_range()`
+
+`multimap`에서 특정 키에 해당하는 **모든 값**을 순회하고 싶을 때 `equal_range(key)`를 사용합니다. 이 함수는 `multimap`을 제대로 활용하기 위한 필수 함수입니다.
+
+  * **`equal_range(key)`**: `key`를 가진 원소들의 \*\*시작과 끝 반복자 쌍(pair)\*\*을 반환합니다.
+      * `pair.first`: `lower_bound(key)`와 동일
+      * `pair.second`: `upper_bound(key)`와 동일
+
+<!-- end list -->
+
+```cpp
+#include <iostream>
+#include <map>
+#include <string>
+
+int main() {
+    std::multimap<std::string, int> scores;
+    scores.insert({"Alice", 85});
+    scores.insert({"Bob", 90});
+    scores.insert({"Alice", 95}); // Alice 라는 키로 재삽입
+
+    // "Alice"의 모든 점수를 출력
+    auto range = scores.equal_range("Alice");
+
+    std::cout << "Alice's scores:" << std::endl;
+    for (auto it = range.first; it != range.second; ++it) {
+        std::cout << it->second << std::endl; // it->first는 key, it->second는 value
+    }
+    return 0;
+}
+```
+
+**실행 결과:**
+
+```
+Alice's scores:
+85
+95
+```
+
+-----
+
+### \#\# 4. `unordered_map` 만의 주의점: 해시 (Hash) 🚀
+
+`unordered_map`은 해시 테이블로 동작하므로, **Key로 사용하는 타입은 반드시 해싱이 가능해야 합니다.**
+
+  * `int`, `double`, `std::string` 등 기본 타입은 C++에서 이미 해시 함수를 제공하므로 문제없이 사용할 수 있습니다.
+  * 하지만 사용자가 직접 만든 `struct`나 `class`를 Key로 사용하려면, 해당 타입에 대한 **해시 함수와 비교 연산자(`==`)를 직접 정의**해야 합니다. 그렇지 않으면 컴파일 에러가 발생합니다.
+
+```cpp
+// 이 구조체를 unordered_map의 Key로 사용하고 싶습니다.
+struct Point {
+    int x;
+    int y;
+};
+```
+
+-----
+
+### \#\# 1. 비교 연산자 정의 (`operator==`)
+
+가장 먼저 할 일은 두 `Point` 객체가 같은지 판단하는 방법을 알려주는 것입니다. `operator==` 함수를 정의하면 됩니다. 두 Point의 x, y 좌표가 모두 같으면 같은 것으로 정의하겠습니다.
+
+```cpp
+// Point 구조체 정의 아래에 추가
+bool operator==(const Point& a, const Point& b) {
+    return a.x == b.x && a.y == b.y;
+}
+```
+
+-----
+
+### \#\# 2. 해시 함수 정의
+
+해시 함수를 정의하는 방법은 크게 두 가지가 있습니다. \*\*첫 번째 방법(std::hash 특수화)\*\*이 더 표준적이고 권장되는 방식입니다.
+
+### **방법 1: `std::hash` 템플릿 특수화 (권장)** ⭐
+
+`std` 네임스페이스에 있는 `hash` 템플릿을 우리가 만든 `Point` 타입에 맞게 \*\*"특수화(specialize)"\*\*하는 것입니다. 이렇게 한 번 정의해두면, 이 프로그램을 사용하는 모든 곳에서 `Point` 타입을 키로 쓰는 `unordered_map`이 자동으로 이 해시 함수를 찾아 사용합니다.
+
+```cpp
+#include <iostream>
+#include <unordered_map>
+#include <string>
+
+// 1. 사용할 사용자 정의 타입
+struct Point {
+    int x;
+    int y;
+};
+
+// 2. 비교 연산자 정의
+bool operator==(const Point& a, const Point& b) {
+    return a.x == b.x && a.y == b.y;
+}
+
+// 3. std::hash 템플릿 특수화 (핵심!)
+namespace std {
+    template<> // 템플릿 특수화를 알림
+    struct hash<Point> {
+        // 'operator()'를 오버로딩하여 해시 함수를 구현
+        size_t operator()(const Point& p) const noexcept {
+            // 두 멤버 변수의 해시 값을 조합하여 고유한 해시 값을 생성
+            // 단순한 덧셈(+)이나 XOR(^)은 충돌 가능성이 높으므로,
+            // 비트 시프트를 섞어주는 것이 일반적입니다.
+            size_t h1 = std::hash<int>{}(p.x);
+            size_t h2 = std::hash<int>{}(p.y);
+            return h1 ^ (h2 << 1); 
+        }
+    };
+}
+
+int main() {
+    // 이제 Point를 Key로 자유롭게 사용할 수 있습니다.
+    std::unordered_map<Point, std::string> landmark;
+
+    Point seoul_city_hall = {126, 37};
+    landmark[seoul_city_hall] = "Seoul City Hall";
+    
+    Point another_point = {126, 37};
+    std::cout << landmark[another_point] << std::endl; // 출력: Seoul City Hall
+
+    return 0;
+}
+```
+
+### **방법 2: 커스텀 해시 구조체 전달**
+
+`unordered_map`을 선언할 때, 사용할 해시 함수를 담은 구조체를 템플릿 인자로 직접 넘겨주는 방식입니다. `std` 네임스페이스를 건드리지 않아도 되고, 상황에 따라 다른 해시 함수를 적용하고 싶을 때 유용합니다.
+
+```cpp
+#include <iostream>
+#include <unordered_map>
+#include <string>
+
+// 1. 사용할 사용자 정의 타입
+struct Point {
+    int x;
+    int y;
+};
+
+// 2. 커스텀 해시 구조체 정의
+struct PointHasher {
+    size_t operator()(const Point& p) const {
+        size_t h1 = std::hash<int>{}(p.x);
+        size_t h2 = std::hash<int>{}(p.y);
+        return h1 ^ (h2 << 1);
+    }
+};
+
+// 3. 커스텀 비교 구조체 정의
+struct PointEqual {
+    bool operator()(const Point& a, const Point& b) const {
+        return a.x == b.x && a.y == b.y;
+    }
+};
+
+
+int main() {
+    // unordered_map 선언 시, 템플릿 인자로 해시와 비교 함수를 직접 지정
+    std::unordered_map<Point, std::string, PointHasher, PointEqual> landmark;
+
+    Point seoul_city_hall = {126, 37};
+    landmark[seoul_city_hall] = "Seoul City Hall";
+
+    Point another_point = {126, 37};
+    std::cout << landmark[another_point] << std::endl; // 출력: Seoul City Hall
+
+    return 0;
+}
+```
+
+-----
+
+### \#\# 어떤 방법을 써야 할까요?
+
+  * **방법 1 (`std::hash` 특수화)**: **일반적으로 이 방법을 추천합니다.** 해당 타입을 프로그램 전반에 걸쳐 일관된 방식으로 해싱하고 싶을 때 가장 깔끔하고 표준적인 방법입니다.
+  * **방법 2 (커스텀 구조체 전달)**: 특정 `unordered_map`에만 다른 해시 규칙을 적용하고 싶거나, 템플릿 코드를 작성하는 등 유연성이 더 필요할 때 사용합니다.
+
+### \#\# 최종 요약: 언제 무엇을 쓸까?
+
+  * **`unordered_map`**: 정렬이 필요 없고, **가장 빠른 속도**가 필요할 때. (대부분의 경우 **첫 번째 선택지**)
+  * **`map`**: **키를 기준으로 정렬**해야 하거나, **범위 기반 검색**(`lower_bound` 등)이 필요할 때.
+  * **`multimap`**: **하나의 키에 여러 개의 값**을 매핑해야 하는 특별한 상황일 때. (예: 전화번호부, 사전 등)
+
 ## 알고리즘 문제 응용법 💡
 
 ### **응용 1: 빈도수 계산 (Frequency Counting)**
