@@ -33,8 +33,6 @@
 
 ### 구현 방식 (Implementation Analysis)
 
-제공된 `세그먼트트리.cpp` 코드를 바탕으로 주요 함수를 분석합니다.
-
 #### **`build` 함수**
 
 ```cpp
