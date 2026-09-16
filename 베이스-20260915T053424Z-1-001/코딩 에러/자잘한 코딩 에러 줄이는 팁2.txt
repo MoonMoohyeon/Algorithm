@@ -1,0 +1,121 @@
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+#include<vector>
+#include<stack>
+#include<map>
+#include<set>
+#include<queue>
+#include<utility>
+#include<algorithm>
+
+using namespace std;
+
+typedef long long ll;
+typedef unsigned long long ull;
+
+const int n_ = 500;
+const int INF = 2100000000;
+
+int N, M; 
+int info[6][6] = {0,};
+int arr[25] = {0,};
+int dx[4] = {0,0,1,-1};
+int dy[4] = {1,-1,0,0};
+string s;
+
+int main(){
+	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+	int n = 0;
+	for(int i=1; i<=5; i++){
+		cin >> s;
+		for(int j=0; j<5; j++){
+			if(s[j] == 'Y'){
+				info[i][j+1] = 0; //임도연
+			}
+			else{
+				info[i][j+1] = 1; //이다솜
+			}
+
+			arr[n++] = i*(10)+j+1;
+		}
+	}
+	
+
+	//i*10 + j. 
+	int ans = 0;
+	for(int a=0;a<25; a++){
+		for(int b=a+1; b<25; b++){
+			for(int c=b+1; c<25; c++){
+				for(int d=c+1; d<25; d++){
+					for(int e=d+1; e<25; e++){
+						for(int f=e+1; f<25; f++){
+							for(int g=f+1; g<25; g++){
+								//인접한지 검사
+								bool c = 0;
+								bool table[6][6] = {0,};
+
+								table[arr[a]/10][arr[a]%10] = 1;
+								table[arr[b]/10][arr[b]%10] = 1;
+								table[arr[c]/10][arr[c]%10] = 1;
+								table[arr[d]/10][arr[d]%10] = 1;
+								table[arr[e]/10][arr[e]%10] = 1;
+								table[arr[f]/10][arr[f]%10] = 1;
+								table[arr[g]/10][arr[g]%10] = 1;
+
+								for(int j = 1; j<=5; j++){
+									for(int k=1; j<=5;  k++){
+										bool check = 0;
+
+										if(table[j][k] == 1){
+											for(int i = 0; i<4; i++){
+												int n_x = j + dx[i];
+												int n_y = k + dy[i];
+
+												if(n_x >= 1 && n_x <= 5 && n_y >= 1 && n_y <= 5 ){
+													if(table[n_x][n_y] == 1){
+														check = 1;
+														break;
+													}
+												}
+											}
+
+											if(check == 0){
+												//인접하지 않음.
+												c = 1;
+												break;
+											}
+										}
+									}
+									if(c == 1)
+										break;
+								}
+								
+								if(c == 1)
+									continue; // ********************************** break인지 continue인지 잘 구분해야 한다!!!!!!!!!!!!!!!
+
+								n = 0;
+								
+								n+= info[arr[a]/10][arr[a]%10];
+								n+= info[arr[b]/10][arr[b]%10];
+								n+= info[arr[c]/10][arr[c]%10];
+								n+= info[arr[d]/10][arr[d]%10];
+								n+= info[arr[e]/10][arr[e]%10];
+								n+= info[arr[f]/10][arr[f]%10];
+								n+= info[arr[g]/10][arr[g]%10];
+
+								if (n>=4){
+									ans++;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	cout << ans;
+	return 0;
+}

@@ -35,20 +35,20 @@ void union_sets(int x, int y) {
     int rootY = find_set(y);
 
     // 두 원소가 이미 같은 집합에 속해 있다면 (루트가 같다면) 아무것도 하지 않습니다.
-    if (x != y) {
+    if (rootX != rootY) {
         // 'Union by Rank' 최적화: 랭크가 더 작은 트리를 랭크가 더 큰 트리에 붙입니다.
         // 이는 전체 트리의 높이가 불필요하게 길어지는 것을 방지하여 효율을 높입니다.
-        // 항상 a가 b보다 랭크가 크거나 같도록 조정합니다.
-        if (rk[x] < rk[y]) {
-            swap(x, y); // a와 b의 역할을 바꿉니다.
+        // 항상 rootX가 rootY보다 랭크가 크거나 같도록 조정합니다.
+        if (rk[rootX] < rk[rootY]) {
+            swap(rootX, rootY); // rootX와 rootY의 역할을 바꿉니다.
         }
         
-        // 랭크가 작은 트리의 루트(b)를 랭크가 큰 트리의 루트(a)의 자식으로 만듭니다.
-        parent[y] = x;
+        // 랭크가 작은 트리의 루트(rootY)를 랭크가 큰 트리의 루트(rootX)의 자식으로 만듭니다.
+        parent[rootY] = rootX;
         
         // 만약 두 트리의 랭크가 같았다면, 합쳐진 후의 트리 랭크는 1 증가합니다.
-        if (rk[x] == rk[y]) {
-            rk[x]++;
+        if (rk[rootX] == rk[rootY]) {
+            rk[rootX]++;
         }
     }
 }

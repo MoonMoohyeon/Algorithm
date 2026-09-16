@@ -1,41 +1,74 @@
+/*
 https://jason9319.tistory.com/358
-ccw을 이용한 선분 교차
+CCW(Counter Clock Wise)를 이용한 선분 교차 판별
 
-A-B, C-D 두 선분이 존재한다 하자
-
-A-B선분에 대해 점 C, D을 각각 CCW을 한다 하자
+A-B, C-D 두 선분이 존재한다고 가정:
+A-B 선분에 대해 점 C, D를 각각 CCW 연산:
 1) 두 방향이 서로 반대이다 == 교차 가능성이 존재
 2) 두 방향이 서로 일치한다 == 교차 가능성이 없다
 
+1)의 경우 같은 연산을 C-D 선분에 대해 점 A, B에 대해서 진행했을 때 두 방향이 반대이면 선분이 교차함.
+즉, CCW(A,B,C) * CCW(A,B,D) <= 0 이면서 CCW(C,D,A) * CCW(C,D,B) <= 0 이면 교차.
 
-1)의 경우 같은 연산을 C-D선분에 대해 점 A, B에 대해서 진행했을때 두방향이 반대이면
-선분이 교차한다고 볼 수 있다
+예외: 일직선 상에 위치할 때 (A-B-C-D 처럼 겹쳐있는 경우)
+-> a <= d && c <= b 형태로 범위가 겹치는지 추가 확인 필요.
 
-CCW(A,B,C)*CCW(A,B,D)<=0 이면서 CCW(C,D,A)*CCW(C,D,B)<=0이면 교차한다고 볼 수 있다.
-<< 하지만 A-B ..... C-D와 같은 예외를 없애주어야 하는데
-<< A------(C) --------(B)------D와 같이 겹쳐져 있는 경우임을 판별하도록 하면 된다
-ex) A.y <= C.y <= B.y or A.y <= D.y <= B.y or B.y <= C.y <= A.y or B.y <= D.y <= A,y
+CCW 값의 의미:
+CCW > 0 : 반시계 방향 (좌회전)
+CCW < 0 : 시계 방향 (우회전)
+CCW == 0 : 일직선 (평행)
+*/
 
+#include <iostream>
+#include <utility>
+#include <algorithm>
 
-즉, CCW을 선분 A-B에 대해 점 C, D가 오른쪽에 있는지, 왼쪽에 있는지로 접근한것이다(시계방향, 시계반대 방향이 아닌, 점의 위치를 판별하는 용도로 쓰인다)
+using namespace std;
 
-CCW > 0이면, 왼쪽에, <0이면 오른쪽에 위치한다. (==0이면 평행하다.)
-ccw가 양수 == 시계반대 방향
-CCW가 음수 == 시계방향
+typedef pair<long long, long long> Point;
 
+// 세 점의 방향성을 판별하는 CCW 함수
+int ccw(Point a, Point b, Point c) {
+    long long op = (b.first - a.first) * (c.second - a.second) - (b.second - a.second) * (c.first - a.first);
+    if (op > 0) return 1;      // 반시계
+    else if (op < 0) return -1; // 시계
+    else return 0;             // 일직선
+}
 
+// 두 선분 AB와 CD의 교차 여부를 판별하는 함수
+int isIntersect(pair<Point, Point> x, pair<Point, Point> y) {
+    Point a = x.first;
+    Point b = x.second;
+    Point c = y.first;
+    Point d = y.second;
 
-int isIntersect(pair<pair<int, int>, pair<int, int>> x, pair<pair<int, int>, pair<int, int>> y) {
-    pair<int, int> a = x.first;
-    pair<int, int> b = x.second;
-    pair<int, int> c = y.first;
-    pair<int, int> d = y.second;
-    int ab = ccw(a, b, c)*ccw(a, b, d);
-    int cd = ccw(c, d, a)*ccw(c, d, b);
+    int ab = ccw(a, b, c) * ccw(a, b, d);
+    int cd = ccw(c, d, a) * ccw(c, d, b);
+
+    // 네 점이 일직선 상에 있는 경우 (예외 처리)
     if (ab == 0 && cd == 0) {
-        if (a > b)swap(a, b); // x or y가 크다. a < b유지 << pair의 <, > 연산의 동작을 판별해보자
-        if (c > d)swap(c, d); // xor y가 크다. c < d유지.
-        return c <= b&&a <= d; // x or y가 크다. a----(c)----b----(d)임을 보장. c-------(a)----(b)-------d도 보장. 
+        if (a > b) swap(a, b); // a <= b 보장
+        if (c > d) swap(c, d); // c <= d 보장
+        return (c <= b && a <= d); // 두 선분의 범위가 겹치는지 확인
     }
-    return ab <= 0 && cd <= 0;
+
+    return (ab <= 0 && cd <= 0);
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    // 선분 1: (1, 1) - (5, 5)
+    pair<Point, Point> line1 = {{1, 1}, {5, 5}};
+    // 선분 2: (1, 5) - (5, 1)
+    pair<Point, Point> line2 = {{1, 5}, {5, 1}};
+
+    if (isIntersect(line1, line2)) {
+        cout << "선분이 교차합니다.\n";
+    } else {
+        cout << "선분이 교차하지 않습니다.\n";
+    }
+
+    return 0;
 }

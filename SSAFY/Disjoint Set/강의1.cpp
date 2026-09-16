@@ -16,18 +16,17 @@ int cntQuery;
 int parent[21];
 int ran[21] = {0,};
 
-int find2(int x) {
-        if(parent[x] == x) return x;
-        int root = find(parent[x]);
-        parent[x] = root;
-        return root;
-}
-
-
 int find(int x) {
     if(parent[x] == x) return x;
 
     return parent[x] = find(parent[x]);
+}
+
+int find2(int x) {
+    if(parent[x] == x) return x;
+    int root = find(parent[x]);
+    parent[x] = root;
+    return root;
 }
 
 int isunion(int a,int b) {
@@ -51,12 +50,12 @@ void Union(int A, int B) {
 }
 
 int main(void) {
+    cin >> cntNode >> cntQuery;
 
     for(int i=1; i <= cntNode; i++) {
         parent[i] = i;
     }
 
-    cin >> cntNode >> cntQuery;
     for(int i = 0; i < cntQuery; i++) {
         int A, B;
         cin >> A >> B;
@@ -66,4 +65,7 @@ int main(void) {
     for(int i=1; i <= cntNode; i++) {
         cout << parent[i] << " ";
     }
+    cout << "\n";
+
+    return 0;
 }

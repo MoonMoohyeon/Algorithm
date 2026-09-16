@@ -9,6 +9,9 @@ const int MAX_N = 101; // 최대 노드 개수 + 1
 
 int N, M;
 
+// dist[k][i][j]: 1~k번 노드'만'을 거쳐서 i에서 j로 가는 최단 거리
+int dist3[MAX_N][MAX_N][MAX_N];
+
 void print_dist3(int k) {
     cout << "\n=== k = " << k << " (1 ~ " << k << "번 노드 경유) ===\n";
     for (int i = 1; i <= N; i++) {
@@ -20,8 +23,6 @@ void print_dist3(int k) {
     }
 }
 
-// dist[k][i][j]: 1~k번 노드'만'을 거쳐서 i에서 j로 가는 최단 거리
-int dist3[MAX_N][MAX_N][MAX_N];
 void floyd() {
     cout << "### Version 1: 3차원 배열 사용 ###";
     print_dist3(0); // 초기 상태 출력

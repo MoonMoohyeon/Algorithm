@@ -1,0 +1,51 @@
+코딩 에러 찾기 팁
+
+명령문의 순서가 결과에 큰 영향을 미친다
+** 조건문의 순서를 짤때 주의점
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 뒤에 위치하는 조건문의 조건이 앞에 위치하는 조건문의 조건일 때도 만족하는지 파악한다
+
+
+
+void update(int pos, int val, int x, int y, int n){
+	if(x == y){
+		if(pos == x){
+			tree[n] += val;
+			//cout << x << ' ' << tree[n] << '\n';
+		}
+		return;
+	}
+	
+	if(x<= pos && pos <= y){
+		tree[n] += val;
+	}
+	
+	if(x>y)
+		return;
+		
+	int mid = (x+y)/2;
+	
+	update(pos, val, x, mid, n*2);
+	update(pos, val, mid + 1, y, n*2 + 1);
+}
+
+void update(int pos, int val, int x, int y, int n){
+	if(x<= pos && pos <= y){
+		tree[n] += val;
+	}//******************************************************************************************x==y경우가 해당 경우에도 성립하기 때문에 tree값이 2번 갱신된다.
+
+	if(x == y){
+		if(pos == x){
+			tree[n] += val;
+			//cout << x << ' ' << tree[n] << '\n';
+		}
+		return;
+	}
+	
+	if(x>y)
+		return;
+		
+	int mid = (x+y)/2;
+	
+	update(pos, val, x, mid, n*2);
+	update(pos, val, mid + 1, y, n*2 + 1);
+}

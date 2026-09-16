@@ -1,0 +1,80 @@
+세그먼트 트리를 이용한 중앙값 찾기
+- 9426 중앙값 측정
+
+
+ex)
+root : 0 ~ 5까지 idx 범위중 현재 존재하는 idx의 개수라 하자
+ex) 쿼리의 idx가 1, 3이라 하면 root은 2을 내보낸다.
+
+0~5 << 0~2, 2 ~5 << 0-1, 1-2, 2-4, 4-5 << 이런식으로 idx의 구간별로 나누어서 해당 구간에 존재하는 idx가 몇개 인지알아낸다.
+ex) 쿼리에 1,3,5가 들어오면
+
+1-5: 3
+
+1-2: 1
+3-5: 2
+
+1-1: 1
+2-2: 0
+3-4: 1
+4-5: 1
+
+3-3: 1
+4-4: 1
+<<이런식으로 세그먼트 트리는 개수를 저장한다
+따라서 업데이트 함수는 다음과 같이 구성된다
+update(int pos, int val, int n, int x, int y)
+
+pos == idx을 의미. val은 1을 의미 한다
+ex) idx 3에 값을 추가했으면, pos=3, val = 1이 된단
+ex) idx 3에 값을 1개 뺏으면, pos =3, val = -1이 된다.
+
+
+따라서 세그먼트 트리를 이용해 중앙값이 무엇인지 알아내기 위해선, 쿼리함수를 다음과 같이 구성한다
+root == 현재 쿼리에 존재하는 전체 데이터 개수
+
+찾으려는 타겟 = root/2임으로, root/2번째 idx가 무엇인지 알아내면됨
+
+int query(int x, int y, int n, int cnt){
+	//cnt == 몇 번째를 찾고 싶은지 나타낸다
+	if(cnt != 0){
+		//cout << x << ' '<<  y << ' ' << tree[n] << '\n';
+	}
+	if(x == y)
+		return x; 
+
+	int a = tree[n*2];
+	int mid = (x + y)/2;
+
+	if(cnt > a){
+		//오른쪽 자식 노드에 있다.
+		int ret = query(mid + 1, y, n*2 + 1, cnt-a);
+		return ret;
+	}else{
+		//왼쪽 자식노드에 있다.
+		int ret = query(x, mid, n*2, cnt);
+		return ret;
+	}
+}
+
+void update(int pos, int val, int x, int y, int n){
+	if(x == y){
+		if(pos == x){
+			tree[n] += val;
+			//cout << x << ' ' << tree[n] << '\n';
+		}
+		return;
+	}
+	
+	if(x<= pos && pos <= y){
+		tree[n] += val;
+	}
+	
+	if(x>y)
+		return;
+		
+	int mid = (x+y)/2;
+	
+	update(pos, val, x, mid, n*2);
+	update(pos, val, mid + 1, y, n*2 + 1);
+}

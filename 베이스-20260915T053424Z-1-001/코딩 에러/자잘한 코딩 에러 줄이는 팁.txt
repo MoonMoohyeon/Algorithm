@@ -1,0 +1,136 @@
+// ull자료형은 ull 자료형으로 담아야 한다
+// 가공된 데이터를 다시 다룰때, 초기화 하는것을 잊으면 안된다.
+
+
+
+
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+#include<vector>
+#include<stack>
+#include<map>
+#include<set>
+#include<queue>
+#include<utility>
+#include<algorithm>
+
+using namespace std;
+
+typedef long long ll;
+typedef unsigned long long ull;
+
+const int n_ = 500;
+const int INF = 2100000000;
+
+struct state{
+	int x;
+	int y;
+	int s; 
+	ull n;
+};
+
+int N, M; 
+string s;
+int info[6][6] = {0,};
+bool table[6][6] = {0,};
+int dx[4] = {0,0,1,-1};
+int dy[4] = {1,-1, 0, 0};
+map<ull, int> m;
+int ans =0;
+
+
+int dfs(struct state prev, int c){
+	//cout << c << ' ' << prev.n << '\n';
+	if(m.find(prev.n) == m.end()){
+		; // 진행.
+	}else{
+		return 0;
+	}
+
+	m[prev.n] = prev.s;
+
+	if(c >= 7){
+		//cout << "도달" << ' ' << prev.n << ' ' << prev.s << '\n';
+		if(prev.s >= 4)
+			ans++;
+		return 0;
+	}
+
+	int prev_x = prev.x;
+	int prev_y = prev.y;
+	ull prev_n = prev.n; // ********************************************************************************이부분 주의
+	int prev_s = prev.s;
+
+	for(int i=0; i<4; i++){
+		prev_n = prev.n;// ********************************************************************************이부분 주의
+		int next_x = prev_x + dx[i];
+		int next_y = prev_y + dy[i];
+
+		if(next_x >= 1 && next_x <= 5 && next_y >= 1 && next_y <= 5){
+			if(table[next_x][next_y] == 0){
+				table[next_x][next_y] = 1;
+
+				struct state next;
+				next.x = next_x;
+				next.y = next_y;
+				next.s = prev_s + info[next_x][next_y];
+				next.n = (ull)(0);
+
+				ull arr[7] = {0,};
+				for(int j=0; j<c; j++){
+					arr[j] = prev_n%100;
+					prev_n = prev_n/100;
+				}
+				arr[c] = ull(next_x*10 + next_y);
+
+				sort(arr, arr + c+1);
+
+				for(int j=0; j<=c; j++){
+					next.n = next.n*100 + arr[j];
+				}
+				
+				dfs(next, c+1);
+				table[next_x][next_y] = 0;
+			}
+		}
+	}
+
+	return 0;
+}
+
+int main(){
+	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+	for(int i=1; i<=5; i++){
+		cin >> s;
+		for(int j=0; j<5; j++){
+			if(s[j] == 'Y'){
+				info[i][j+1] = 0; //임도연
+			}
+			else{
+				info[i][j+1] = 1; //이다솜
+			}
+		}
+	}
+
+
+	//25252525252525
+	for(int i=1; i<=5; i++){
+		for(int j=1; j<=5; j++){
+			struct state s;
+			s.x = i;
+			s.y = j;
+			s.s = info[i][j];
+			s.n = (ull)(i*10 + j);
+			
+			table[i][j] = 1; // 방문.
+			dfs(s, 1);
+			table[i][j] = 0;
+		}
+	}
+	
+	cout << ans;
+
+	return 0;
+}

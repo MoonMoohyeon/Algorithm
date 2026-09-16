@@ -1,0 +1,133 @@
+#include <iostream>
+#include<vector>
+using namespace std;
+const int n_ = 151;
+const int INF = 2100000000;
+int N, M;
+vector<int> v[151];
+int dp[151][151];
+int cache[151][151];
+bool visit[151];
+
+
+int dfs(int prev, int pre){
+	//pre -> prev은 몇개?
+	if(visit[prev] == 0)
+		visit[prev] = 1;
+	else
+		return 0;
+	
+	int size = v[prev].size();
+	int ans = 0;
+	for(int i=0; i<size; i++){
+		int ret = dfs(v[prev][i], prev);
+		ans += ret;
+	}
+	
+	dp[pre][prev] = ans + 1;
+	return dp[pre][prev];
+}
+
+
+
+
+
+int sub_solve(int prev, int idx, int cnt){
+	if(idx == v[prev].size()-1)
+		return cache[v[prev][idx]][cnt];
+	
+	int ans = INF;
+	for(int i=0; i<=cnt; i++){
+		int cmp = 0;
+		int ret = sub_solve(prev, idx + 1, cnt - i);
+		
+		if(ret != INF){
+			cmp = cache[v[prev][idx]][i] + ret;
+			ans = ans < cmp ? ans : cmp;
+		}
+	}
+	
+	return ans;
+}
+
+
+int solve(int pre, int prev, int cnt){
+	if(cnt == 0)
+		return 1;
+	
+	if(dp[pre][prev] == cnt)
+		return 0;
+	else if(dp[pre][prev] < cnt)
+		return INF;
+		
+	if(cache[prev][cnt] == INF-1){
+		//하위노드에 cnt을 분배...
+		int size = v[prev].size();
+		for(int i=0; i<size; i++){
+			if(visit[v[prev][i]] == 0){
+				for(int j=0; j<=cnt; j++){
+					int ret = solve(prev, v[prev][i], j);
+					cache[v[prev][i]][j] = ret;
+				}
+				
+				visit[v[prev][i]] = 1;
+			}
+		}
+		
+		int ans = sub_solve(prev, 0, cnt);
+		cache[prev][cnt] = ans;
+	}
+
+	return cache[prev][cnt];
+}
+
+
+
+
+
+
+int main() {
+	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+	cin >> N >> M;
+	for(int i=0; i<N-1; i++){
+		int a, b;
+		cin >>a >> b;
+		v[a].push_back(b);
+		v[b].push_back(a);
+	}
+	
+	for(int i=0; i<n_; i++){
+		for(int j=0; j<n_; j++){
+			dp[i][j] = -1;
+		}
+	}
+	
+	for(int i=1; i<=N; i++){
+		dfs(i, 0);
+		
+		for(int j=1; j<=N; j++)
+			visit[j] = 0;
+	}
+	
+	int ans = INF;	
+	for(int i=1; i<=N; i++){
+		for(int j=0; j<n_; j++){
+			for(int k=0; k<n_; k++){
+				cache[j][k] = INF-1;
+			}
+		}
+		
+		visit[i] = 1;
+		int ret = solve(0, i, M); // i가 root
+		ans = ans < ret ? ans : ret;
+		
+		for(int j=1; j<=N; j++)
+			visit[j] = 0;
+	}
+	
+	if(ans == INF)
+		ans = -1;
+		
+	cout << ans;
+	return 0;
+}

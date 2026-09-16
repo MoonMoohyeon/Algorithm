@@ -27,13 +27,7 @@ struct edge {
 	int w;
 	int a;
 	int b;
-} typedef edge;
-
-struct edge {
-	int w;
-	int a;
-	int b;
-} typedef edge;
+};
 
 int main(){
 	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);

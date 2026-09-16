@@ -1,0 +1,107 @@
+단절점
+
+해당 점을 제거 하면 두개의 그래프로 나뉘어짐
+
+단절점을 구분하는 방법
+
+int ppre
+pre
+prev
+
+pre을 제거하면, prev에서 ppre로 갈 수 없음을 이용한다
+
+따라서 해당 정점과 연결되어 있는 다른 정점들 사이에, 해당 정점을 이용하지 않고 다른 정점에 갈수 있는 경로가 있는지 조사한다.
+
+1. 스패닝 트리로 만든다. (dfs 탐색을 이용)
+2. 스패닝 트리로 만들어 각 정점에 대해 해당 정점이 단절점인지 파악하는 알고리즘을 적용한다
+	<< 루트노드의 자식노드가 2개 이상이면 단절점이 아니다. 
+	<< 루트노드가 아닐시, 해당 노드를 방문하지 않고 다른 인접한 노드에 갈수있으면 단절점이다. 
+___________________________________________________________________________________________________________________________
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+int N, M;
+vector<int> v[10001]; //그래프
+int d[10001];
+int cnt = 1;
+bool check[10001]; //단절점인지 파악
+
+
+int dfs(int prev) {
+	int len = v[prev].size();
+	int ret = d[prev];
+
+	for (int i = 0; i < len; i++) {
+		if (d[v[prev][i]] == 0) { //방문한적이 없다.
+			d[v[prev][i]] = cnt++;
+
+			int cmp = dfs(v[prev][i]); //자식이 방문한것 중 제일 빠른 것을 반환.
+			ret = cmp < ret ? cmp : ret;
+
+			if (cmp >= d[prev]) //자신보다 더 이전의 것을 방문하지 못했다.
+				check[prev] = 1;	
+		}
+		else 
+			ret = ret < d[v[prev][i]] ? ret : d[v[prev][i]]; //제일 빠른 정점을 반환한다. 
+			//굳이 prev정점을 이용하지 않아도, prev보다 더 앞서 방문한 ret정점에 연결된 간선들을 이용하면, prev이후에 방분되는 정점을 방문할 수 있다는 의미이다.
+		
+	}
+	
+	return ret;
+}
+
+
+
+void solve(int prev) {
+	int len = v[prev].size();
+	int n = 0;
+
+	for (int i = 0; i < len; i++) {
+		if (d[v[prev][i]] == 0) {
+			n++; // 자식 노드의 개수를 확인한다. 
+			d[v[prev][i]] = cnt++; // 스패닝 트리로 볼시 몇번째 방문되는지 표기한다.
+
+			dfs(v[prev][i]); // dfs를 이용해 스패닝트리로 볼시 번호부여 + 단절점인지 파악한다.
+		}
+	}
+
+	if (n >= 2)
+		//자식노드가 2개이상이면, 서로다른 2개의 그룹을 연결시키는 노드가 정점노드임을 알수 있다,<< 단 dfs탐색에서만이다.
+		check[prev] = 1;
+}
+
+int main() {
+	//입력
+	cin >> N >> M;
+
+	int a, b;
+	for (int i = 0; i < M; i++) {
+		cin >> a >> b;
+		v[a].push_back(b);
+		v[b].push_back(a);
+	}
+
+	//
+	for (int i = 1; i <= N; i++) {
+		if (d[i] == 0) { 
+// 스패닝 트리를ㄹ 이용한 단절점 탐색. 
+// 문제에서 주어진 그래프가 완전연결 그래프가 아닌 부분그래프일수 있음으로, for문을 이용해 모든 노드가 루트노드가 될 수 있음을 의미.
+			d[i] = cnt++;
+			solve(i);
+		}
+	}
+
+	int c = 0;
+	for (int i = 1; i <= N; i++)
+		if (check[i] == 1)
+			c++;
+
+	cout << c << '\n';
+	for (int i = 1; i <= N; i++)
+		if (check[i] == 1)
+			cout << i << ' ';
+	
+	return 0;
+}

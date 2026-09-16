@@ -1,0 +1,12 @@
+벡터 insert
+벡터 erase
+
+vector<int> v;
+
+vector<int>::iterator iter;
+
+v.insert(iter, 10);
+
+v.erase(iter);
+
+	vector<int>().swap(v); // 벡터 매모리 해제

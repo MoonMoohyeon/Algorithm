@@ -1,0 +1,43 @@
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+#include<vector>
+#include<stack>
+#include<map>
+#include<set>
+#include<queue>
+#include<utility>
+#include<algorithm>
+
+using namespace std;
+
+typedef long long ll;
+typedef unsigned long long ull;
+
+const int n_ = 500;
+const int INF = 2100000000;
+
+int N, M;
+
+ll dp[n_];
+
+ll dfs(int prev) {
+	if (prev == N) {
+		//
+	}
+
+	if (dp[prev] == -1) {
+		//
+		ll ret = dfs(prev + 1);
+		dp[prev] = ret < dp[prev] ? dp[prev] : ret;
+	}
+
+	return 0;
+}
+
+int main() {
+	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+	fill(dp, dp + n_, -1);
+
+	return 0;
+}

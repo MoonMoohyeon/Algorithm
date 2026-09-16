@@ -1,0 +1,53 @@
+#include <iostream>
+#include<utility>
+#include<algorithm>
+using namespace std;
+
+int N;
+pair<int,int> p_info[100001];
+
+
+bool compare(pair<int,int> p1, pair<int,int> p2){
+	return p1.first < p2.first;
+}
+
+
+int main() {
+	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+	cin >> N;
+	for(int i=0; i<N; i++){
+		cin >> p_info[i].first >> p_info[i].second;
+	}
+	
+	sort(p_info, p_info + N, compare);
+	
+	int dx = p_info[1].first - p_info[0].first;
+	int dy = p_info[1].second - p_info[0].second;
+	int rep = dx * dx + dy * dy;
+	//rep은 반경의 기준이다.
+	
+	
+	for(int i=1; i<N;){
+		bool check = 0;
+	
+		for(int j=i+1; j<N; j++){
+			dx = p_info[j].first - p_info[i].first;
+			dy = p_info[j].second - p_info[i].second;
+			
+			int cmp = dx * dx + dy * dy;
+			if(rep > cmp){
+				i = j;
+				rep = cmp;
+				check = 1;
+				break;
+			}
+		}
+		
+		if(check==0)
+			break;
+	}
+	
+	cout << rep;
+	
+	return 0;
+}

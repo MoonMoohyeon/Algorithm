@@ -1,0 +1,95 @@
+/*
+ 단절선 알고리즘, 양방향 그래프
+ > 정점의 개수, 간선의 개수
+ > 간선 정보가 입력으로 들어왔을 때
+
+ 해당 간선을 지나지 않고, from 에서 to 노드로 갈수 있으면 단절점이 아니다.
+ 단절점과 마찬가지로 to 가 from 보다 레벨이 낮은 정점을 방문하기만 한다면, 단절된것이 아니다
+
+ 이전 방문 노드라는 정보를 통해서 to -> from 으로 가는 것을 막는 방식으로 처리해보자.
+*/
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+//#pragma warning(disable:4996)
+using namespace std;
+
+
+
+const int n_ = 100001;
+int N, M;
+vector<int> v[n_];
+int d[n_];
+int cnt = 1;
+vector<pair<int, int>> e;
+
+
+
+
+bool compare(pair<int, int> p1, pair<int, int> p2) {
+	if (p1.first == p2.first)
+		return p1.second < p2.second;
+	return p1.first < p2.first;
+}
+
+
+
+int dfs(int prev, int pre) {
+	d[prev] = cnt++;
+	int len = v[prev].size();
+	int ret = d[prev]; 
+
+	for (int i = 0; i < len; i++) {
+		if(v[prev][i] == pre)
+			continue;
+			
+		if (d[v[prev][i]] == 0) { //방문한적이 없다.
+			int cmp = dfs(v[prev][i], prev); //자식이 방문한것 중 제일 빠른 것을 반환.
+
+			if (cmp <= d[prev]) //이전 정점을 방문했다.
+				ret = cmp < ret ? cmp : ret;
+			else 
+				e.push_back({ prev, v[prev][i] });
+		}
+		else { 
+			ret = ret < d[v[prev][i]] ? ret : d[v[prev][i]];
+		}
+	}
+
+	return ret;
+}
+
+
+
+int main() {
+	//freopen("input.txt", "r", stdin);
+	cin >> N >> M;
+
+	int a, b;
+	for (int i = 0; i < M; i++) {
+		cin >> a >> b;
+		v[a].push_back(b);
+		v[b].push_back(a);
+	}
+
+	for (int i = 1; i <= N; i++) {
+		if (d[i] == 0) {
+			dfs(i, 0);
+		}
+	}
+
+	//단절선의 출력부분. 사전순으로 출력.
+	int size = e.size();
+	for (int i = 0; i < size; i++) {
+		if(e[i].first > e[i].second)
+			swap(e[i].first, e[i].second);
+	}
+	sort(e.begin(), e.end(), compare);
+
+	cout << size <<'\n';
+	for (int i = 0; i < size; i++) 
+		cout << e[i].first << ' ' << e[i].second << '\n';
+	
+	return 0;
+}

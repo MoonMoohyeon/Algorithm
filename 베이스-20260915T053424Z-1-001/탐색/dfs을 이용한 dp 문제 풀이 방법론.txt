@@ -1,0 +1,24 @@
+dfs을 이용한 dp풀이
+
+dp[n_][n_]
+
+dp[target] = 0
+
+dp[prev]은 prev에서 target까지 가는 최소거리이다. dfs은 밑에서 부터 쌓아올린다. (즉 역순이다)
+점화식을 이용한 dp은 정방향으로 쌓아 올린다.
+
+
+int dfs(int info){
+	if(info out of range)
+		return 0; // 범위 오류 탈출문
+
+	if(info == target)
+		return 0; // 탈출문
+
+	if(dp[info] 정보가 있다)
+		;
+	else
+		탐색;
+		
+	return dp[info];		
+}

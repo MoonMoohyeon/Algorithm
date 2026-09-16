@@ -1,0 +1,32 @@
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+#include<vector>
+#include<stack>
+#include<map>
+#include<set>
+#include<queue>
+#include<utility>
+#include<algorithm>
+
+using namespace std;
+
+typedef long long ll;
+typedef unsigned long long ull;
+
+const int n_ = 500;
+const int INF = 2100000000;
+
+int N, M;
+
+bool compare(pair<int, int> p1, pair<int, int> p2) {
+	return p1.first < p2.first; // 오름차순, ex) 1 2 3 4 55...
+}
+
+int main() {
+	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+
+
+	return 0;
+}

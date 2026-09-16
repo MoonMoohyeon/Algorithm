@@ -1,0 +1,93 @@
+https://www.acmicpc.net/problem/1865
+
+음의 사이클의 존재여부 알아내기
+
+벨만 포드 알고리즘을 응용
+<< 음의 사이클 존재여부만 알고 싶다면 굳이 table[start] != INF일 때 업데이트를 진행한다는 조건문은 필요가 없다.
+<< 그래프가 완전그래프가 아닌 그래프로 주어질수 있기 때문이다.
+<< INF을 설정해주는 이유는 << 출발지점에서 해당 지점을 방문할 수 있는지 여부를 체크하기 위함인데 << 웜홀 문제는 출발지점이 모든 정점이 됨으로 굳이 INF을 지정하지 않아도 된다.
+<< 하지만 웜홀을 탔을 때, 출발지점으로 되돌아올 수 있다는 것을 table의 값 설정을 통해 부여해야 한다.
+
+<< 재밌는 점은, 웜홀을 탔을 때, 만약 출발지점으로 돌아오지 못한다면, 웜홀의 시작지점의 값은 변화가 없음으로 << 사이클을 검사하는 마지막 간선업데이트 과정에서 << 간선이 업데이트가 되지 않음으로 출발지점으로 
+되돌아 올 수 있는지 여부를 굳이 검사 안해도 된다. 즉 << 출발지점을 table[모든 idx] = INF라 하고 << N-1번의 간선 업데이트 이후 << table[모든 idx] == INF인 지점이 있다면, << 이는 주어진 input에서 단절된 그래프의 개수와 같음을 알 수 있다.
+
+
+
+#include <iostream>
+#include<vector>
+#include<queue>
+#include<utility>
+#include<algorithm>
+
+using namespace std;
+
+int T, N, M, K;
+
+
+
+int main() {
+	cin >> T;
+	for(int k=0; k<T; k++){
+		cin >> N >> M >>K;
+		
+		vector<pair<int,int>> v[501];
+		int table[501] = {0,};
+		for(int i=1; i<=N; i++){
+			table[i] = 1e8;
+		}
+		//table[1] = 0;
+		
+		for(int i=0; i<M; i++){
+			int a, b,c;
+			cin >> a >> b >> c;
+			v[a].push_back({b,c});
+			v[b].push_back({a,c});
+		}
+		
+		for(int i=0; i<K; i++){
+			int a, b,c;
+			cin >> a >> b >> c;
+			v[a].push_back({b,-1 * c});
+		}
+		
+		
+		for(int i=1; i<=N; i++){
+			
+			for(int j=1; j<=N; j++){
+				int s = v[j].size();
+				for(int k=0; k<s; k++){
+					if(1){//
+						int ret = table[j] + v[j][k].second;
+						table[v[j][k].first] = table[v[j][k].first] < ret ? table[v[j][k].first] : ret;
+					}
+				}
+			}
+		}
+		
+		int ans = 0;
+		for(int j=1; j<=N; j++){
+			int s = v[j].size();
+			
+			for(int k=0; k<s; k++){
+				if(1){//
+					int ret = table[j] + v[j][k].second;
+					
+					if(table[v[j][k].first] > ret){
+						ans++;
+						break;
+					}
+				}
+			}
+			
+			if(ans > 0)
+				break;
+		}
+		
+		if(ans > 0)
+			cout << "YES" << '\n';
+		else
+			cout << "NO" << '\n';
+	}
+	
+	return 0;
+}

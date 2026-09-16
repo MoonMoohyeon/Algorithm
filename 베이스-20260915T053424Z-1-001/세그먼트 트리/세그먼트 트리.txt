@@ -1,0 +1,106 @@
+//세그먼트 트리는 보통...
+//주어진 쿼리를 빠르게 해결하는데 사용
+// 주어진 구간의 합 or 최대값 or 최소값...
+
+#include <iostream>
+using namespace std;
+
+typedef long long ll;
+
+const int n_ = 1000001;
+const int m_ = 4 * n_; //범위의 4배.
+
+ll arr[n_];
+ll info[m_];
+ll N, M, K;
+
+
+ll make(int prev, int left, int right) {
+	//입력받은 배열을 통해서, 세그먼트 트리 만들기.
+	//이건 구간합.
+	if (right < left)
+		return 0;
+
+	if (left == right) {
+		info[prev] = arr[left];
+		return info[prev];
+	}
+
+	int mid = (left + right) / 2;
+	info[prev] = make(2 * prev, left, mid)
+		+ make(2 * prev + 1, mid + 1, right);
+
+
+	return info[prev];
+}
+
+
+ll update(int pos, ll num, int prev, int left, int right) {
+	//pos의 값을 num으로 업데이트 했음.
+	if (right < left)
+		return 0;
+
+	if (pos < left || right < pos) {
+		return info[prev];
+	}
+
+	if (left == pos && right == pos) {
+		info[prev] = num;
+		return info[prev];
+	}
+
+	int mid = (left + right) / 2;
+	info[prev] = update(pos, num, 2 * prev, left, mid) +
+		update(pos, num, 2 * prev + 1, mid + 1, right);
+
+
+	return info[prev];
+}
+
+
+ll find(int start, int end, int prev, int left, int right) {
+	//start~end 구간합. left~right == prev의 범위.
+	ll ret = 0;
+
+	if (right < left)
+		return ret;
+
+	if (end < left || start > right)
+		return ret;
+
+	if (left >= start && end >= right)
+		return info[prev];
+
+	int mid = (left + right) / 2;
+	ret = find(start, end, 2 * prev, left, mid) +
+		find(start, end, 2 * prev + 1, mid + 1, right);
+
+	return ret;
+}
+
+
+int main() {
+	cin >> N >> M >> K;
+	for (int i = 1; i <= N; i++) {
+		cin >> arr[i];
+	}
+
+	//시작 위치 prev = 1로 고정.
+	make(1, 1, N);
+
+
+	for (int i = 0; i < M + K; i++) {
+		ll a, b, c;
+		cin >> a >> b >> c;
+
+		if (a == 1) {
+			update(b, c, 1, 1, N);
+		}
+		else {
+			//cout << b << ' '<< c << ' ';
+			cout << find(b, c, 1, 1, N) << '\n';
+		}
+	}
+
+	return 0;
+}

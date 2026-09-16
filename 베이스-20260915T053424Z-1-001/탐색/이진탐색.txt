@@ -1,0 +1,36 @@
+#include <iostream>
+using namespace std;
+
+
+
+
+int main() {
+	int left = start;
+	int right = end;
+	int point = ;
+	
+	while(left <= right){
+		mid = left + right/2;
+		ret = info[point] + info[mid];
+		
+		if(ret < 0){
+			left = mid+1;	
+		}else if(ret > 0){
+			right = mid-1;
+		}else{
+			break;
+		}
+	}
+	
+
+	return 0;
+}
+
+
+
+// 하나의 고정점
+// 고정점에 대응되는 목적점
+// 목적점을 이분탐색을 이용해서 찾는다
+// left, right의 중간점이 기준. 
+// 중간점을 탐색했음으로 다음 탐색 범위엔 중간점이 들어가지 않는다
+//

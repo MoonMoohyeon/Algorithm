@@ -1,6 +1,7 @@
 #include <iostream>
 #include <queue>
 #include <string>
+#include <cstring>
 using namespace std;
 
 int visited[7][7];
@@ -108,6 +109,7 @@ int BFS4(int y, int x) {
             q.push({ny,nx});
         }
     }
+    return -1;
 }
 
 int main(void) {

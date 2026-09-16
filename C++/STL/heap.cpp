@@ -1,78 +1,76 @@
-#include<iostream>
-#include<cstdio>
-#include<queue>
-#include<vector>
-#include<utility>
+#include <iostream>
+#include <queue>
+#include <vector>
 
 using namespace std;
 
+// 1. 기본형 priority_queue
+// priority_queue<int> pq; // 기본: 최대 힙 (내림차순, 큰 값이 top)
+// priority_queue<int, vector<int>, greater<int>> min_pq; // 최소 힙 (오름차순, 작은 값이 top)
 
-struct state{
-	int a;
-	int b;
+// 2. 구조체와 커스텀 비교 연산자
+struct state {
+    int a;
+    int b;
+    state(int a, int b) : a(a), b(b) {}
 };
 
-
-struct comp{
-	bool operator()(const struct state &s1, const struct state &s2){
-		return s1.a <= s2.a;
-	}
-};
-// a가 클수록 우선순위가 높다. 
-
-priority_queue<struct state, vector<struct state>, comp> pq;
-
-int main(){
-	struct state s1;
-	s1.a = 10;
-	s1.b = 10;
-
-	struct state s2;
-	s2.a = 8;
-	s2.b = 8;
-
-	pq.push(s1);
-	pq.push(s2);
-	
-	int end = pq.size();
-	for(int i = 0; i<end; i++){
-		cout << pq.top().a << '\n'; // front말고 top으로 참고한다
-		pq.pop();
-	}
-
-	return 0;
-}
-
-// ______________________________________________________________________________________________________________
-// state생성자를 이용하면 더 간단히 할 수 있다
-
-struct state{
-	int a;
-	int b;
-	state(int a, int b) : a(a), b(b) {}
+// priority_queue의 비교자(Comparator) 작성 시 주의점:
+// 1. Strict Weak Ordering: 반드시 '<' 또는 '>'를 사용해야 하며, '<=' 사용 시 힙 손상 등 미정의 동작(UB) 발생!
+// 2. priority_queue는 기본이 less이므로, comp에서 s1.a < s2.a 이면 s2가 우선순위를 갖습니다 (최대 힙 동작).
+//    반대로 s1.a > s2.a 이면 s1이 우선순위를 갖습니다 (최소 힙 동작).
+struct comp {
+    bool operator()(const state &s1, const state &s2) {
+        // a가 클수록 우선순위가 높게 (최대 힙)
+        if (s1.a == s2.a) {
+            return s1.b < s2.b; // a가 같으면 b가 큰 순서
+        }
+        return s1.a < s2.a;
+    }
 };
 
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
 
-struct comp{
-	bool operator()(const state &s1, state &s2){
-		return s1.a <= s2.a;
-	}
-};
+    // --- 1. 기본 int 힙 ---
+    cout << "--- 1. 기본 최대 힙 / 최소 힙 ---\n";
+    priority_queue<int> max_pq;
+    max_pq.push(10);
+    max_pq.push(5);
+    max_pq.push(20);
 
-priority_queue<state, vector<state>, comp> pq;
+    cout << "최대 힙 (큰 순서): ";
+    while (!max_pq.empty()) {
+        cout << max_pq.top() << " ";
+        max_pq.pop();
+    }
+    cout << "\n";
 
-int main(){
-	state s1(10,10);
-	state s2(8,8);
+    priority_queue<int, vector<int>, greater<int>> min_pq;
+    min_pq.push(10);
+    min_pq.push(5);
+    min_pq.push(20);
 
-	pq.push(s1);
-	pq.push(s2);
-	
-	int end = pq.size();
-	for(int i = 0; i<end; i++){
-		cout << pq.top().a << '\n'; // front말고 top으로 참고한다
-		pq.pop();
-	}
+    cout << "최소 힙 (작은 순서): ";
+    while (!min_pq.empty()) {
+        cout << min_pq.top() << " ";
+        min_pq.pop();
+    }
+    cout << "\n\n";
 
-	return 0;
+    // --- 2. 구조체 힙 ---
+    cout << "--- 2. 커스텀 구조체 힙 ---\n";
+    priority_queue<state, vector<state>, comp> pq;
+
+    pq.push(state(10, 5));
+    pq.push(state(8, 8));
+    pq.push(state(10, 20));
+
+    while (!pq.empty()) {
+        cout << "a: " << pq.top().a << ", b: " << pq.top().b << "\n";
+        pq.pop();
+    }
+
+    return 0;
 }

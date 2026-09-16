@@ -32,9 +32,9 @@ struct Edge {
     }
 };
 
-Edge edges[20];
-int parent[20];
-int ran[20] = {0,};
+Edge edges[50];
+int parent[50];
+int ran[50] = {0,};
 int N, M;
 
 int find(int x) {
@@ -65,7 +65,7 @@ int main(void) {
         edges[i] = {a,b,c};
     }
 
-    for(int i=0; i<N; i++) {
+    for(int i=0; i<=N; i++) {
         parent[i] = i;
     }
 
@@ -79,4 +79,8 @@ int main(void) {
             sum += now.cost;
         }
     }
+
+    cout << sum << "\n";
+
+    return 0;
 }

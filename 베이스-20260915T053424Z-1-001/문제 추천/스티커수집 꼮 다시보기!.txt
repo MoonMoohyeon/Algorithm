@@ -1,0 +1,111 @@
+// value가 x필요할 때, x을 만족하는 최소 price은 N이다. << 이것을 
+dfs(0, N/2-1... 으로 만들어진
+v[0]을 이용해 만들어 낸다.
+
+
+
+가치가 낮은데 가격이 높음 << 더  높은 가치를 지녔지만 더 낮은 가격을 지닌 것으로 업뎃한다. 
+
+
+<< 
+#include<iostream>
+#include<vector>
+#include<utility>
+#include<algorithm>
+using namespace std;
+
+typedef long long ll;
+
+vector<pair<ll, ll>> v[2];
+pair<ll,ll> info[33];
+int N, M;
+ll K;
+ll ans = 1e11;
+ll ad;
+
+
+bool compare(pair<ll,ll> p1, pair<ll,ll> p2){
+	return p1.second < p2.second;
+}
+
+
+void dfs(int left, int right, ll price, ll worth, int state){
+	if(left > right){
+		if(state == 1){
+			// 이렇게 구성함으로서 2중 포문을 마지막에 안해도 된다 N/2*2^(N/2)의 풀이법
+			pair<ll,ll> f;
+			f.second = K - worth;
+			f.first = 0;
+			
+			int idx = lower_bound(v[0].begin(), v[0].end(), f, compare) -v[0].begin();
+			
+			if(idx == v[0].size()){
+				return;
+			}else{
+				ll ret = v[0][idx].first + price;
+				ret = ret - ad < 0 ? 0 : ret - ad;
+				ans = ans < ret ? ans : ret;
+			}
+		}
+		
+		v[state].push_back({price, worth});
+		return;
+	}
+	
+	dfs(left + 1, right, price + info[left].first, worth + info[left].second, state);
+	dfs(left + 1, right, price, worth , state);
+}
+
+
+
+int main(){
+	cin >> N;
+	
+	for(int i=0; i<N; i++){
+		cin >> info[i].first;
+	}
+    
+    ll total = 0;
+	for(int i=0; i<N; i++){
+		cin >> info[i].second;
+        total += info[i].second;
+	}
+	
+	cin >> K;
+    if( K > total){
+        cout << "-1";
+        return 0;
+    }
+	cin >>  M;
+	
+	ad = 0;
+	for(int i=0; i<M; i++){
+		int a;
+		cin >> a;
+		ad += info[a].first;
+	}
+	
+	
+	dfs(0, N/2-1, 0, 0, 0);
+	
+	sort(v[0].begin(), v[0].end(), compare);
+	
+	int size = v[0].size();
+	ll MIN = 1e10;
+	// 해당 부분이 가지는 의미가 문제풀이의 핵심!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	for(int i=size-1; i>=0; i--){
+		MIN = v[0][i].first > MIN ? MIN : v[0][i].first;
+		v[0][i].first = MIN;
+	} 
+	
+	dfs(N/2, N-1, 0, 0, 1);
+	
+	
+	if(ans == 1e11){
+		cout << "-1";
+	}else{
+		cout << ans;
+	}
+	
+	return 0;
+}

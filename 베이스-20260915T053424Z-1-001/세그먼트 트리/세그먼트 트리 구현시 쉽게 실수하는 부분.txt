@@ -1,0 +1,87 @@
+#include <iostream>
+using namespace std;
+
+typedef long long ll;
+
+ll MOD = 1000000007;
+ll tree[4000001];
+ll info[1000001];
+int N, M, K;
+
+
+ll init(int left, int right, int prev){
+	if(left > right)
+		return 1;
+		
+	if(left == right){
+		tree[prev] = info[left];
+		return tree[prev];
+	}
+	
+	int mid = (left + right)/2;
+	tree[prev] = ((init(left, mid, prev*2)%MOD)* 
+							(init(mid + 1, right, prev*2 + 1)%MOD))%MOD;
+							
+	return tree[prev];
+}
+
+
+
+ll update(int left, int right, int prev, int pos){
+	if(pos < left || right < pos)
+		return tree[prev]; //******************** update에서 pos 를 포함하는 구간외엔 그냥 그대로 tree값을 내보내야 한다.!!!!!!!***********************
+		
+	if(left == right){
+		tree[prev] = info[left];
+		return tree[prev];
+	}
+	
+	int mid = (left + right)/2;
+	tree[prev] = ((update(left, mid, prev*2, pos)%MOD) * 
+						(update(mid + 1, right, prev*2 + 1, pos)%MOD))%MOD;
+							
+	return tree[prev];
+}
+
+
+
+ll query(int left, int right, int prev, int start, int goal){
+	if(goal < left || right < start)
+		return 1;
+		
+	if(start <= left && right <= goal)
+		return tree[prev];
+		
+	int mid = (left + right)/2;
+//***************************** 쿼리에선 tree[prev]을 갱신하지 않는다****************************************
+	return ((query(left, mid, prev*2, start, goal)%MOD)* 
+							(query(mid + 1, right, prev*2 + 1, start, goal)%MOD))%MOD;
+}
+
+
+int main() {
+	for(int i=0; i<=4000000; i++){
+		tree[i] = 1;			
+	}
+	
+	cin >> N >> M >> K;
+	for(int i=1; i<=N; i++){
+		cin >> info[i];
+	}
+	
+	init(1, N, 1);
+	
+	for(int i=0; i<M+K; i++){
+		int a, b, c;
+		cin >> a >>b >> c;
+		
+		if(a ==1){
+			info[b] = c;
+			update(1, N, 1, b);
+		}else{
+			cout << query(1,N,1,b,c) << '\n';
+		}
+	}
+	
+	return 0;
+}

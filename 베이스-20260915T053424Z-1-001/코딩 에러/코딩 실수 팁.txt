@@ -1,0 +1,38 @@
+우선순위 큐를 이용한 레벨 탐색은 불가능
+
+	for(int i=0; i<M; i++){ // **************** 레벨 탐색을 의미한다.
+		//cout << "start" << '\n';
+		bool table[10000001] = {0,};
+		int s = pq.size();
+		
+		for(int j=0; j < s; j++){ // ******************************************************************* 탐색 범위를 제한하여 레벨 탐색을 꾀했지만, 우선순위 큐이기 때문에 순서가 해당 for문을 도는 중에 바뀌게 된다.
+			int prev = pq.top();
+			pq.pop();
+			
+			string str = to_string(prev);
+			int len = str.size();
+			for(int i=0; i<len; i++){
+				string cmp(str);
+				
+				for(int j = 0; j<len; j++){
+					if(i != j){
+						char c = cmp[i];
+						cmp[i] = cmp[j];
+						cmp[j] = c;
+						int next = stoi(cmp);
+							
+						if(table[next] == 0){
+							table[next] = 1;
+							//cout << next << '\n';
+							pq.push(next); // ********************************** 이때 만약 push된 값이 우선순위가 높다면, 해당 값이 현재 레벨에서 또 탐색된다.
+						}
+						
+						break;
+					}
+				}
+			}
+		}
+	}
+
+에서 pq.push한 즉시 우선순위에 의해 정렬된 큐에의해, 레벨 탐색이 먹히지 않음
+

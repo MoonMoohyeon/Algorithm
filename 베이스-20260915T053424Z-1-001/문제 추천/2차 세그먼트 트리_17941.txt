@@ -1,0 +1,114 @@
+//********************************* 이부분 안하면 런타임 에러 나온다 << xs == xe이후에 탈출문을 코딩 안하면 런타임 에러!
+
+#include <iostream>
+	using namespace std;
+	
+	int info[2001][2001] = {0,};
+	int N, M, K;
+	int x,y,r,c,t,d;
+	
+	int dx[5] = {0,0,0,1,-1};
+	int dy[5] = {0,1,-1,0,0};
+	
+	
+	void make(int xs, int xe, int ys, int ye, int prev_x, int prev_y, int x, int y, int n){
+		if(xs > xe || ys > ye)
+			return;
+		
+		if(xs <= x && x <= xe && ys <= y && y <= ye){
+			//cout<< prev_x << ' '<< prev_y << '\n';
+			if(info[prev_x][prev_y] < n)
+				info[prev_x][prev_y] = n;
+		}else{
+			return;
+		}
+			
+		int mid_x = (xs + xe)/2; 
+		int mid_y = (ys + ye)/2;
+		
+		if(xs != xe){ //********************************* 이부분 안하면 런타임 에러 나온다 << xs == xe이후에 탈출문을 코딩 안하면 런타임 에러!
+			make(xs, mid_x, ys, ye, prev_x * 2, prev_y, x, y, n);
+			make(mid_x +1, xe, ys, ye, prev_x * 2 + 1, prev_y, x, y,  n);
+		}
+		
+		if(ys != ye){
+			make(xs, xe, ys, mid_y, prev_x, prev_y * 2, x, y, n);
+			make(xs, xe, mid_y +1, ye, prev_x, prev_y * 2 + 1, x, y, n);
+		}
+		return;
+	}
+	
+	
+	
+int find(int xs, int xe, int ys, int ye, int prev_x, int prev_y, int x1, int x2, int y1, int y2){
+		if(xs > xe || ys > y2)
+			return 0;
+			
+		if( xe < x1 ||  xs > x2 || ye < y1 || ys > y2){
+			return 0;
+		}
+		
+		if( x1 <= xs && xe <= x2 && y1 <= ys && ye <= y2){
+			return info[prev_x][prev_y];
+		}
+		
+		int mid_x = (xs + xe)/2; 
+		int mid_y = (ys + ye)/2;
+		int ret = 0;
+		int cmp = 0;
+		
+		if(xs != xe){
+			cmp = find(xs, mid_x, ys, ye, prev_x * 2, prev_y, x1, x2, y1, y2);
+			ret = cmp > ret ? cmp : ret;
+			
+			cmp = find(mid_x +1, xe, ys, ye, prev_x * 2 + 1, prev_y, x1, x2, y1, y2);
+			ret = cmp > ret ? cmp : ret;
+		}
+		
+		if(ys != ye){
+			cmp = find(xs, xe, ys, mid_y, prev_x, prev_y * 2, x1, x2, y1, y2);
+			ret = cmp > ret ? cmp : ret;
+			
+			cmp = find(xs, xe, mid_y +1, ye, prev_x, prev_y * 2 + 1, x1, x2, y1, y2);
+			ret = cmp > ret ? cmp : ret;
+		}
+		
+		return ret;
+}
+	
+	
+int main(){
+	cin >> N >> M;
+	
+	for(int i=1; i<=N; i++){
+		//x
+		for(int j = 1; j<=M; j++){
+			//y
+			int a = 0;
+			cin >> a;
+			make(1, N, 1, M, 1, 1, i, j, a);
+		}
+	}
+		
+	cin >> K;
+		
+	
+	for(int i=0; i<K; i++){
+		cin >> x >> y >> r >> c >> t >> d;
+		int total = 0;
+		//x ~ x+r-1 // 상하
+		//y ~ y+c-1 // 좌우
+		//t
+		//x+dy[d], y + dx[d];
+		for(int j=0; j<t; j++){
+			int ret = find(1,N, 1, M, 1,1, x,x+r-1, y, y+c-1);
+			
+			x = x + dy[d];
+			y = y + dx[d];
+			total = total ^ ret;
+		}
+		cout << total << '\n';
+	}
+	
+	return 0;
+}

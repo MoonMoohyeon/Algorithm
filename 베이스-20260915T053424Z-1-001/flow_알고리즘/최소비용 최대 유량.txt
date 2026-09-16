@@ -1,0 +1,121 @@
+최소비용 최대유량
+
+경로를 찾을 때 최단거리로 찾고, 해당 경로로 보낼수 있는 유량을 흘려보낸다.
+
+<< 벨만 - 포드 알고리즘을 이용한다 << 음의 가중치를 지닌 간선이 존재하기 때문이다
+<< 시간초과로 인해, 벨만 포드를 응용한 SPFA 알고리즘을 사용한다.
+
+#include<iostream>
+#include<vector>
+#include<queue>
+using namespace std;
+
+const int n_ = 202;
+const int INF = 2100000000;
+
+
+vector<pair<int,int>> v[n_];
+int cap[n_][n_];
+int f[n_][n_];
+int pre[n_];
+int info[n_];
+int N, M;
+bool table[n_];
+int cycle[n_];
+int start, goal;
+
+
+int main(){
+    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+	start = 0;
+	goal = 201;
+	
+	cin >> N >> M;
+	for(int i=1; i<=N; i++){
+		int a;
+		cin >> a;
+		cap[i][goal] = a;
+		v[i].push_back({goal, 0});
+	}
+	
+	for(int i=1+100; i<=M+100; i++){
+		int a;
+		cin >> a;
+		cap[start][i] = a;
+		v[start].push_back({i, 0});
+	}
+	
+	for(int i=1+100; i<=M+100; i++){
+		for(int j=1; j<=N; j++){
+			int a;
+			cin >> a;
+			v[i].push_back({j, a});
+			v[j].push_back({i, -1 * a});
+			cap[i][j] = cap[start][i];
+		}
+	}
+	
+	int ans = 0;
+	for(int t = 0;;t++){
+		fill(info, info + n_, INF);
+		info[start] = 0;
+		
+		fill(table, table + n_, 0);
+		
+		queue<int> q;
+		q.push(start);
+		
+		while(!q.empty()){
+			int prev = q.front();
+			q.pop();
+			table[prev] = 0;
+			
+			int size = v[prev].size();
+			for(int i=0; i<size; i++){
+				if(cap[prev][v[prev][i].first] - f[prev][v[prev][i].first] > 0){
+					int next = v[prev][i].first;
+					int next_w = v[prev][i].second + info[prev];
+					
+					if(info[next] > next_w){
+						info[next] = next_w;
+						pre[next] = prev;
+						
+						if(table[next] == 0){
+							table[next] = 1;
+							q.push(next);
+						}else{
+							continue;
+						}
+					}
+				}
+			}
+		}
+		
+		if(info[goal] == INF)
+			break;
+		
+		int cost = info[goal];
+		int pos = goal;
+		int cnt = INF;
+		while(pos != start){
+			int pre_pos = pre[pos];
+			int can_flow = cap[pre_pos][pos] - f[pre_pos][pos];
+			cnt = cnt > can_flow ? can_flow : cnt;
+			pos = pre_pos;
+		}	
+		
+		pos = goal;
+		while(pos != start){
+			int pre_pos = pre[pos];
+			f[pre_pos][pos] += cnt;
+			f[pos][pre_pos] -= cnt;
+			pos = pre_pos;
+		}
+		
+		ans += cnt * cost;
+	}
+	
+	cout << ans;
+	
+	return 0;
+}

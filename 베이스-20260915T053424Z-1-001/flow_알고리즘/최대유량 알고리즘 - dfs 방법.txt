@@ -1,0 +1,191 @@
+최대유량 알고리즘
+
+https://ratsgo.github.io/data%20structure&algorithm/2017/11/29/maxflow/
+
+#include<iostream>
+#include<vector>
+using namespace std;
+
+const int n_ = 201;
+
+int f[n_][n_];
+int cap[n_][n_];
+bool visit[n_];
+vector<int> v[n_];
+int N, M;
+int start, goal;
+
+int dfs(int prev, int cnt){
+	//cnt은 흐르는 유량
+	if(visit[prev] == 0)
+		visit[prev] = 1;
+	else
+		return 0;
+		
+		
+	if(prev == goal){
+		return cnt;
+	}	
+		
+	int size = v[prev].size();
+	for(int i=0; i<size; i++){
+		int can_flow = cap[prev][v[prev][i]] - f[prev][v[prev][i]];
+		if(can_flow == 0)
+			continue;
+		
+		//cout << prev << ' ' << can_flow << '\n';
+		can_flow = cnt < can_flow ? cnt : can_flow;
+		
+		int ret = dfs(v[prev][i], can_flow);
+		if(ret != 0){
+			f[prev][v[prev][i]] += ret;
+			f[v[prev][i]][prev] -= ret;
+			return ret;
+		}
+	}
+	
+	return 0;
+}
+
+
+________________________________________________________________________________________________________________________________________
+int main(){
+	for(int i=1; i<=200; i++){
+		for(int j=1; j<=200; j++){
+			cap[i][j] = -1;
+		}
+	}
+	
+
+	cin >> N >> M;	
+	for(int i=0; i<M; i++){
+		int a, b, c;
+		cin >>a >> b >> c;
+		
+		if(cap[a][b] != -1){
+			cap[a][b] += c;
+		}else{
+			cap[a][b] = c;
+			v[a].push_back(b);
+			v[b].push_back(a);
+		}
+			cap[b][a] = 0;
+	}
+	
+	return 0;
+}
+________________________________________________________________________________________________________________________________________
+#include<iostream>
+#include<vector>
+using namespace std;
+
+const int n_ = 202 + 200;
+
+int f[n_][n_];
+int cap[n_][n_];
+bool visit[n_];
+vector<int> v[n_];
+int N, M;
+int INF = 210000000;
+int start, goal;
+
+int dfs(int prev, int cnt){
+	//cnt은 흐르는 유량
+	if(visit[prev] == 0)
+		visit[prev] = 1;
+	else
+		return 0;
+		
+		
+	if(prev == goal){
+		return cnt;
+	}	
+		
+	int size = v[prev].size();
+	for(int i=0; i<size; i++){
+		if(cap[prev][v[prev][i]] == 0){
+			if(f[prev][v[prev][i]] == 0){
+				continue;
+			}else{
+				
+			}
+		}
+		
+		int can_flow = cap[prev][v[prev][i]] - f[prev][v[prev][i]];
+		if(can_flow == 0)
+			continue;
+		
+		//cout << prev << ' ' << can_flow << '\n';
+		can_flow = cnt < can_flow ? cnt : can_flow;
+		
+		int ret = dfs(v[prev][i], can_flow);
+		if(ret != 0){
+			f[prev][v[prev][i]] += ret;
+			f[v[prev][i]][prev] -= ret;
+			return ret;
+		}
+	}
+	
+	return 0;
+}
+
+
+int main(){
+	for(int i=0; i<n_; i++){
+		for(int j=0; j<n_; j++){
+			cap[i][j] = -1;
+		}
+	}
+	
+
+	cin >> N >> M;	
+	for(int i=1; i<=N; i++){
+		int a, b, c;
+		cin >> a;
+		
+		for(int j=0; j<a; j++){
+			cin >> b;
+			
+			cap[i][b+200] = 1;
+			cap[b+200][i] = 0;
+			
+			v[i].push_back(b+200);
+			v[b+200].push_back(i);
+		}
+	}
+	
+	start = 0;
+	goal = 401;
+	for(int i=1; i<=N; i++){
+		cap[start][i] = 1;
+		cap[i][start] = 0;
+		v[start].push_back(i);
+		v[i].push_back(start);
+	}
+	
+	for(int i=1; i<=M; i++){
+		cap[i+200][goal] = 1;
+		cap[goal][i+200] = 0;
+		v[i+200].push_back(goal);
+		v[goal].push_back(i+200);
+	}
+	
+	
+	int ans = 0;
+	for(;;){
+		int ret = dfs(0, INF);
+		//cout << ret << '\n';
+		if(ret > 0){
+			ans += ret;
+		}else	
+			break;
+			
+		for(int i=0; i<n_; i++){
+			visit[i] = 0;
+		}
+	}
+	
+	cout << ans;
+	return 0;
+}
+________________________________________________________________________________________________________________________________________

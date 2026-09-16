@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
     */
 
     string str = "SSAFY";
-    char a = str[2]; // A 반환
+    char ch = str[2]; // A 반환
     char b = str.at(3); // F 반환
 
     str.front(); // 맨 앞 문자 반환

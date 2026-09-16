@@ -1,0 +1,108 @@
+최소 스패닝 트리
+- 크루스칼 알고리즘
+https://m.blog.naver.com/ndb796/221230994142
+
+
+#include<iostream>
+#include<vector>
+#include<algorithm>
+#include<utility>
+using namespace std;
+
+
+typedef long long ll;
+
+const int n_ = 10001;
+vector<pair<int,int>> v[n_];
+int union_set[n_] = {0,};
+int r_n[n_] = {0,};
+
+struct state{
+	int s;
+	int e;
+	int w;
+};
+vector<struct state> edge;
+int N, M;
+
+bool compare(struct state s1, struct state s2){
+	return s1.w < s2.w;
+}
+
+
+int find(int prev){
+	for(;;){
+		if(prev == union_set[prev]){
+			return prev;
+		}else
+			prev = union_set[prev];
+	}
+}
+
+int uni(int p1, int p2){
+	int r1 = find(p1);
+	int r2 = find(p2);
+	
+	if(r1 == r2){
+		return -1;
+	}
+	
+	if(r_n[r1] > r_n[r2]){
+		union_set[r2] = r1;
+	}else if(r_n[r1] < r_n[r2]){
+		union_set[r1] = r2;
+	}else{
+		union_set[r2] = r1;
+		r_n[r1]++;
+	}
+	
+	return 0;
+}
+
+
+int main(){
+	cin >> N >> M;
+	ll total = 0;
+	
+	for(int i=0; i<M; i++){
+		int a, b, c;
+		cin >> a >> b >> c;
+		v[a].push_back({b, c});
+		v[b].push_back({a, c});
+		
+		struct state s;
+		s.s = a;
+		s.e = b;
+		s.w = c;
+		edge.push_back(s);
+	}
+	
+	sort(edge.begin(), edge.end(), compare);
+	
+	for(int i=1; i<=N; i++){
+		union_set[i] = i;
+		r_n[i] = 1;
+	}
+
+	
+	int s = edge.size();
+	int n = 0;
+	for(int i=0; i<s; i++){
+		struct state s = edge[i];
+		
+		if(uni(s.s, s.e) == -1){
+			//사이클
+			continue;
+		}else{
+			total += ll(s.w);
+            n++;
+		}
+		
+		if(n == N-1)
+			break;
+	}
+	
+	cout << total;
+	
+	return 0;
+}

@@ -1,0 +1,113 @@
+lazy propagation
+
+update가 NlogN연산이기 때문에, update가 많이 발생하면 시간초과나옴 
+<< update을 logN에 끝내는 방법론인다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+#include <iostream>
+using namespace std;
+typedef long long ll;
+
+ll info[1000001];
+ll tree[4000001];
+ll lazy[4000001]; //느리게 전파할때 필요한 배열~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+ll init(int left, int right, int prev){
+	if(left == right){
+		tree[prev] = info[left];
+		return tree[prev];
+	}	
+	
+	int mid = (left + right)/2;
+	return tree[prev] = init(left, mid, prev * 2) + init(mid +1, right, prev * 2 + 1);
+}
+
+
+void update(int left, int right, int prev, int start, int goal, ll num){
+	if(lazy[prev] != 0){                                                       //전파해야 하는 값이 존재하면 전파한다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		tree[prev] += lazy[prev] * (right-left + 1);
+		
+		if(left != right){
+			lazy[prev*2 + 1] += (lazy[prev]);
+			lazy[prev*2] += (lazy[prev]);
+		}
+		
+		lazy[prev] = 0;
+	}
+		
+	if(right < start || goal < left)
+		return;	
+		
+	if(start <= left && right <= goal){
+		tree[prev] += (num) * (right - left + 1);
+		
+		if(left != right){
+			lazy[prev*2 + 1] += (num);
+			lazy[prev*2] += (num);
+		}
+		
+		return;
+	}
+		
+	int mid = (left + right)/2;
+	update(left, mid, prev * 2, start, goal, num);
+	update(mid +1, right, prev * 2 + 1,  start, goal, num);
+	tree[prev] = tree[prev*2 + 1] + tree[prev*2];
+	return;
+}
+
+
+ll query(int left, int right, int prev, int start, int goal){
+	if(lazy[prev] != 0){ 							//전파해야 하는 값이 존재하면 전파한다!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 전파하지 않으면 query 계산에 문제가 생긴다. ex) 1~3전파인데, 2~5구간을 계산할때.
+		tree[prev] += lazy[prev] *(right - left + 1);
+		
+		if(left != right){
+			lazy[prev*2 + 1] += lazy[prev];
+			lazy[prev*2] += lazy[prev];
+		}
+		
+		lazy[prev] = 0;
+	}
+	
+	if(start <= left && right <= goal){
+		return tree[prev];
+	}
+	
+	if(right < start || goal < left)
+		return 0;
+	
+		
+	int mid = (left + right)/2;
+	return  query(left, mid, prev * 2, start , goal) + query(mid +1, right, prev * 2 + 1,  start , goal);
+}
+
+
+int N, M, K;
+
+
+int main() {
+    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+	cin >> N >> M >> K;
+	for(int i=1; i<=N; i++){
+		cin >> info[i];
+	}
+	
+	init(1, N, 1);
+	
+	for(int i=0; i<M+K; i++){
+		ll a, b, c;
+		cin >> a;
+		if(a == 1){
+			cin >> a >> b >> c;
+			update(1, N, 1, a,b,c);
+		}else{
+			cin >> a >> b;
+			ll ret = query(1, N, 1, a,b);
+			cout << ret << '\n'; 
+		}
+	}
+	
+	return 0;
+}

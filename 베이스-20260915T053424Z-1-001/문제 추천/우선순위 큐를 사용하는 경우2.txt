@@ -1,0 +1,59 @@
+https://www.acmicpc.net/problem/14464
+
+우선순위 큐를 사용해야하는이유ㅜ
+1) 우선순위를 부여하여 처리해야 할때
+2) 쿼리에 우선순위를 부여할 때.
+
+* 소들의 구간의 길이가 짧은 것이 '더 우선적'으로 매칭해야 한다.
+* 쿼리(질문)들에 우선순위를 부여하기 위함이다
+
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+#include<vector>
+#include<stack>
+#include<map>
+#include<set>
+#include<queue>
+#include<utility>
+#include<algorithm>
+ 
+using namespace std;
+ 
+typedef long long ll;
+typedef unsigned long long ull;
+ 
+const int n_ = 500;
+const int INF = 2100000000;
+
+struct compare{
+	bool operator()(pair<int,int> p1, pair<int,int> p2){
+		return (p1.second - p1.first) > (p2.second - p2.first);
+	}
+};
+ 
+ 
+int N, M; 
+int info[20001];
+priority_queue<pair<int,int>, vector<pair<int,int>>, compare> pq;
+
+ 
+ 
+int main(){
+	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+	cin >> N >> M;
+ 
+	for(int i=0; i<N; i++)
+		cin >> info[i];
+ 
+	for(int i=0; i<M; i++){
+		int a, b;
+		cin >> a >> b;
+		pq.push({a, b}); //구간의 길이가 짧은 것에 우선적으로 매칭한다 << 쿼리에 우선순위를 부여하며 정렬한다.
+	}
+	
+	int ans = 0;
+	
+	cout << ans;
+	return 0;
+}

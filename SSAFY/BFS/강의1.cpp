@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+#include <vector>
 using namespace std;
 
 /*
@@ -39,14 +40,17 @@ int mat[11][11];
 
 void BFS2(int start) {
     queue<int> q;
+    vector<bool> vis(N + 1, false);
     q.push(start);
+    vis[start] = true;
     while(!q.empty()) {
         int now = q.front();
         q.pop();
         cout << now << " ";
         for(int i=1; i<=N; i++) {
-            if(mat[now][i] == 1) {
-                q.push(mat[now][i]);
+            if(mat[now][i] == 1 && !vis[i]) {
+                vis[i] = true;
+                q.push(i);
             }
         }
     }
@@ -91,9 +95,8 @@ int BFS4(int start, int dest) {
         int now = q.front();
         q.pop();
         if(now == dest) {
-            cout << visited[now] << " ";
+            return visited[now];
         }
-        // cout << now << " ";
         for(int i=0; i<alis[now].size(); i++) {
             int next = alis[now][i];
             if(visited[next] != -1) continue;
@@ -102,9 +105,7 @@ int BFS4(int start, int dest) {
         }
     }
 
-    for(int i=1; i<=N; i++) {
-        cout << "[]" << i << "] " << visited[i] << "\n";
-    }
+    return visited[dest];
 }
 
 int main() {

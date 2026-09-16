@@ -37,32 +37,38 @@ enum class Color {
 };
 
 int main() {
-    // 초기화
-    // 복사 초기화
-    int i = 10;
-    char c = 'A';
-    long l = 12345L;
-    float f = 3.14f;
-    double d = 2.71828;
-    bool b = true;
+    // 초기화 방식 3가지
+    // 1) 복사 초기화 (Copy Initialization)
+    {
+        int i = 10;
+        char c = 'A';
+        long l = 12345L;
+        float f = 3.14f;
+        double d = 2.71828;
+        bool b = true;
+    }
 
-    // 직접 초기화
-    int i(10);
-    char c('A');
-    long l(12345L);
-    float f(3.14f);
-    double d(2.71828);
-    bool b(true);
+    // 2) 직접 초기화 (Direct Initialization)
+    {
+        int i(10);
+        char c('A');
+        long l(12345L);
+        float f(3.14f);
+        double d(2.71828);
+        bool b(true);
+    }
 
-    // 유니폼 초기화
+    // 3) 유니폼 초기화 (Uniform Initialization, C++11~)
     // 데이터 손실이 발생할 수 있는 축소 변환(narrowing conversion)을 방지
     // 예를 들어, int 변수에 소수점 값을 넣으려고 하면 컴파일 오류가 발생하여 실수를 방지
-    int i{10};
-    char c{'A'};
-    long l{12345L};
-    float f{3.14f};
-    double d{2.71828};
-    bool b{true};
+    {
+        int i{10};
+        char c{'A'};
+        long l{12345L};
+        float f{3.14f};
+        double d{2.71828};
+        bool b{true};
+    }
 
 
     // 비트셋

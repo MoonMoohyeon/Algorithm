@@ -1,0 +1,116 @@
+#include<iostream>
+#include<vector>
+#include<queue>
+using namespace std;
+
+const int n_ = 202 + 200;
+
+int pre[n_];
+int f[n_][n_];
+int cap[n_][n_];
+bool visit[n_];
+vector<int> v[n_];
+int N, M;
+int INF = 210000000;
+int start, goal;
+
+
+int main(){
+	for(int i=0; i<n_; i++){
+		for(int j=0; j<n_; j++){
+			cap[i][j] = -1;
+		}
+	}
+	
+
+	cin >> N >> M;	
+	for(int i=1; i<=N; i++){
+		int a, b, c;
+		cin >> a;
+		
+		for(int j=0; j<a; j++){
+			cin >> b;
+			
+			cap[i][b+200] = 1;
+			cap[b+200][i] = 0;
+			
+			v[i].push_back(b+200);
+			v[b+200].push_back(i);
+		}
+	}
+	
+	start = 0;
+	goal = 401;
+	for(int i=1; i<=N; i++){
+		cap[start][i] = 1;
+		cap[i][start] = 0;
+		v[start].push_back(i);
+		v[i].push_back(start);
+	}
+	
+	for(int i=1; i<=M; i++){
+		cap[i+200][goal] = 1;
+		cap[goal][i+200] = 0;
+		v[i+200].push_back(goal);
+		v[goal].push_back(i+200);
+	}
+	
+	int ans = 0;
+	for(int t = 0;;t++){
+		bool check = 0;
+		visit[start] = 1;
+		queue<pair<int,int>> q;
+		q.push({start, INF});
+		
+		while(!q.empty()){
+			pair<int,int> prev = q.front();
+			q.pop();
+		
+			
+			if(prev.first == goal){
+				ans += prev.second;
+				int cnt = prev.second;
+				int pos = goal;
+				
+				for(;;){
+					if(pos == start)
+						break;
+						
+					int pre_pos = pre[pos];
+					f[pre_pos][pos] += cnt;
+					f[pos][pre_pos] -= cnt;
+					pos = pre_pos;
+				}
+				
+				check = 1;
+				break;
+			}
+			
+			
+			int size = v[prev.first].size();
+			for(int i=0; i<size; i++){
+				if(visit[v[prev.first][i]] == 0){
+					int can_flow = cap[prev.first][v[prev.first][i]] - f[prev.first][v[prev.first][i]];
+					if(can_flow == 0)
+						continue;
+						
+					visit[v[prev.first][i]] = 1;
+					can_flow = can_flow < prev.second ? can_flow : prev.second;
+					pre[v[prev.first][i]] = prev.first;
+					q.push({v[prev.first][i], can_flow});
+				}
+			}
+		}
+		
+		if(check == 0){
+			break;
+		}
+		
+		for(int i=0; i<=n_; i++){
+			visit[i] = 0;
+		}
+	}
+	
+	cout << ans;
+	return 0;
+}

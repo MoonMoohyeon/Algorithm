@@ -1,0 +1,45 @@
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+#include<vector>
+#include<stack>
+#include<map>
+#include<set>
+#include<queue>
+#include<utility>
+#include<algorithm>
+
+using namespace std;
+
+typedef long long ll;
+typedef unsigned long long ull;
+
+const int n_ = 500;
+const int INF = 2100000000;
+
+int N, M;
+
+struct comp {
+	bool operator()(pair<int, int> p1, pair<int, int> p2) {
+		return p1.second > p2.second; // 우선순위 p1.second가 먼저 처리된다.
+	}
+};
+
+priority_queue < pair<int, int>, vector<pair<int, int>>, comp> q;
+
+
+int main() {
+	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+	while (!q.empty()) {
+		pair<int, int> prev = q.top();
+		q.pop();
+
+		for (int i = 0;;) {
+			// q에 추가..
+			q.push(make_pair());
+		}
+	}
+
+	return 0;
+}

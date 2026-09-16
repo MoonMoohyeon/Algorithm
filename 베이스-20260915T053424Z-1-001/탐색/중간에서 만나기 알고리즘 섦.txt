@@ -1,0 +1,57 @@
+*중간에서 만나기
+https://rkdxowhd98.tistory.com/181
+
+2개로 나누는 이유는, 
+3개로 나누게 되면 dfs * dfs * dfs번 for문으로 탐색해야 한다.(3중 포문)
+따라서 반으로 나누는게 제일 빠르다.
+
+
+#include<vector>
+#include<iostream>
+using namespace std;
+
+int info[31];
+int N, M;
+vector<int> v[2];
+
+int dfs(int left, int right, int sum, int state){
+	if(sum != 0)
+		v[state].push_back(sum);
+		
+	if(left > right){
+		return 0;
+	}
+	
+	dfs(left + 1, right, sum + info[left], state);
+	dfs(left + 1, right, sum, state);
+	
+	return 0;
+}
+
+int main(){
+	cin >> N >> M;
+	for(int i=0;i<N; i++){
+		cin >> info[i];
+	}
+	
+	v[0].push_back(0);
+	v[1].push_back(0);
+	dfs(0, N/2-1, 0, 0);
+	dfs(N/2, N-1, 0, 1);
+	
+	int ans = 0;
+	int size = v[0].size();
+	for(int i=0; i<size; i++){
+		int len = v[1].size();
+		
+		for(int j=0; j<len; j++){
+			if(v[0][i] + v[1][j] <=M){
+				ans++;
+			}
+		}
+	}
+	
+	//cout << v[0].size() << ' ' << v[1].size();
+	cout << ans;
+	return 0;
+}

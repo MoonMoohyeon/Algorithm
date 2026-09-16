@@ -1,0 +1,94 @@
+https://www.acmicpc.net/problem/1868
+
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+#include<vector>
+#include<stack>
+#include<map>
+#include<set>
+#include<queue>
+#include<utility>
+#include<algorithm>
+
+using namespace std;
+
+typedef long long ll;
+typedef unsigned long long ull;
+
+const int n_ = 50001;
+const int INF = 2100000000;
+
+int N, M; 
+vector<int> v[n_];
+bool table[n_]; //정점 조사가능 여부.
+pair<int,int> p[n_];
+int cnt = 0;
+int base = 0;
+
+int dfs(int prev){
+        //현재 prev은 포함했다.
+        for(int j=prev+1; j<=N; j++){
+
+        }
+}
+
+bool compare(pair<int,int> p1, pair<int,int> p2){
+        return p1.second > p2.second;
+}
+
+
+int main(){
+	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+        cin >> N;
+
+        for(int i=0; i<N-1; i++){
+                int a, b;
+                cin >> a >> b;
+                v[a].push_back(b);
+                v[b].push_back(a);
+        }
+
+        //서로다른 많은 노드와 연결된 정점부터 물어본다.
+        //간선이 1개밖에 없는 것은 조사 범위에서 제외해도 된다. 루트 노드는 조사에서 제외한다. 
+        //루트노드를 방문하게 하는 정점은 반드시 포함해야 한다는 의미와 동일.
+
+        for(int i=1; i<=N; i++){
+                p[i].first = i;
+                p[i].second = v[i].size();
+                if(v[i].size() > 1){
+                        cnt++;
+                }else{
+                        int point = v[i][0];
+                        if(table[i] == 0){
+                                table[point] = 1;
+                                base++;
+                                for(int j=0; j<v[point].size(); j++){
+                                        table[v[point][j]] = 1;
+                                }
+                        }
+                }
+        }
+        p[0].first = 0;
+        p[0].second = 0;
+        sort(p, p+N+1, compare);
+
+        cout << base << '\n';
+        for(int i=1; i<=N; i++){
+                cout << table[i] << ' ';
+        }
+        cout << '\n';
+
+	for(int i=0; i<=N; i++){
+		cout << p[i].first << ' '<< p[i].second << '\n';
+	}
+
+        int ans  = 1e9;
+        for(int i=0; i<N; i++){
+                int ret = dfs(i);
+                ans = ret < ans ? ret : ans;
+        }
+
+        cout << ans;
+	return 0;
+}

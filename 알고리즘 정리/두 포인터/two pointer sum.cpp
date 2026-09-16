@@ -20,27 +20,26 @@ int main(int argc, char** argv) {
         cin >> arr[i];
     }
 
-    int i, j, cnt;
-    long long sum;
-    i = j = cnt = sum = 0;
+    int i = 0, j = 0, cnt = 0;
+    long long sum = 0;
 
-    while(1) {
-        if (i >= N || j >= N) break;
-        if (i == j) sum = arr[i];
+    // j(오른쪽 포인터)를 하나씩 늘려가며 sum에 더하고,
+    // sum > M이면 i(왼쪽 포인터)를 당겨주면서 부분합 M을 찾는다.
+    while (j < N) {
+        sum += arr[j];
 
-        if (sum < M) {
-            sum += arr[++j];
-        }
-        else if (sum > M) {
+        while (sum > M && i <= j) {
             sum -= arr[i++];
         }
-        else if (sum == M) {
+
+        if (sum == M) {
             cnt++;
-            sum += arr[++j];
         }
+
+        j++;
     }
 
-    cout << cnt;
+    cout << cnt << "\n";
 
 
     return 0;

@@ -1,138 +1,138 @@
-#include<iostream>
-#include<queue>
-using namespace std;
-
-
-struct Plus {
-	int operator()(int left, int right) const {
-		return left + right;
-	};
-};
-
-struct cmp {
-	bool operator() (int left, int right) const {
-
-		if (left < right) return true;
-		return false;
-
-
-		// Á¤·Ä¿¡¼­´Â ÀÛÀº °ª ¿ì¼± -> ¿ì¼±¼øÀ§ Å¥¿¡ Àû¿ëÇÏ¸é Å« °ª ¿ì¼±ÀÌ µÊ
-		// -> sort ÇÔ¼ö¿¡ Á¤·Ä ±âÁØ ÇÔ¼ö¸¦ Á¤ÇØÁÙ ¶§¿Í ´Ş¸® 
-		// °¡Àå ¿ŞÂÊ¿¡ °¡´Â °ªÀÌ ¿ì¼±¼øÀ§°¡ ³·À½. 
-		// Á¤·Ä°ú´Â !!¹İ´ë!!·Î ÇÔ¼ö ±âÁØÀÌ Àû¿ëµÊ
-	};
-};
-
-struct Coord {
-	int y, x;
-
-	// ÀÌ struct¿¡ ¤À´ëÇÑ Á¤·Ä ±âÁØ ¹Ù²ğ ÀÏ ¾øÀ¸¸é struct ³»ºÎ¿¡ ±¸Çö
-	bool operator<(Coord right) const {
-		// y Å«¤» °Å¿ì¼±
-		if (y < right.y) return true;
-		if (y > right.y) return false;
-
-		// x ÀÛÀº °Å ¿ì¼±
-		if (x < right.x) return false;
-		if (x > right.x) return true;
-		return false;
-	}
-};
-
-
-struct coordCmp {
-	// Á¤·Ä ±âÁØ ¹Ù²ğ ÀÏ °í·ÁÇÏ¸é function object·Î
-	bool operator() (Coord left, Coord right) const {
-		// y Å« °Í ¿ì¼±(¿ì¼±¼øÀ§ Å¥ Àû¿ë ±âÁØ, Å« °Ô ¿À¸¥ÂÊÀ¸·Î °¡°Ô)
-		if (left.y < right.y) return true;
-		if (left.y > right.y) return false;
-
-		// x Å« °Í ¿ì¼±
-		if (left.x < right.x) return true;
-		return false;
-	};
-};
-
-int main() {
-
-	Plus p;
-	int ans = p(1, 2);
-	///////////////////////////////////////////////////////////////////////////////////
-	/*
-
-	±âº» µ¥ÀÌÅÍ Å¸ÀÔ
-	 -> ±âº» Á¦°ø ¿É¼Å ¤¤Àû¿ë °¡´É less, greater
-	 -> function object ¹æ½Ä(°´Ã¼¸¦ ÇÔ¼öÃ³·³ ¤¶´Â ¹æ½Ä)
-	 -> operator< ¿À¹ö·Îµù ¾ÈµÊ
-	*/
-	
-	priority_queue<int>pq1;	// ÃÖ´ë°ª ·çÆ®
-	
-	// container adapter
-	priority_queue<int, vector<int>, greater<>>pq2;	// ÃÖ¼Ò°ª ·çÆ®
-	priority_queue<int, vector<int>, cmp>pq3;	// ÃÖ´ë°ª ·çÆ®
-
-	// µ¥ÀÌÅÍ Ãß°¡
-	// O(logN)
-	//pq.push(1);
-	//pq.push(5);
-	//pq.push(3);
-	//pq.push(2);
-
-	//// °¡Àå ¿ì¼±¼øÀ§ ³ôÀº °ª º¸±â(°ª Å« °Ô default, MaxHeap ±¸Á¶)
-	//// O(1)
-	//cout << pq.top() << "\n";
-
-	//// µ¥ÀÌÅÍ »èÁ¦(·çÆ® = °¡Àå ¿ì¼±¼øÀ§ ³ôÀº °ª)
-	//// O(logN)
-	//pq.pop();
-	//cout << pq.top();
-
-	// Å¥°¡ ºñ¾ú´ÂÁö È®ÀÎ
-	//pq.empty();
-
-	// µ¥ÀÌÅÍ °ü¸® : ¹ë·±½Ì -> heapify 
-	// O(logN)
-
-
-	/*pq.push(1);
-	pq.push(11);
-	pq.push(13);
-	pq.push(14);
-	pq.push(19);
-	pq.push(21);
-	pq.push(51);
-
-	while (!pq.empty()) {
-		int now = pq.top(); pq.pop();
-		cout << now << " ";
-	}*/
-
-	///////////////////////////////////////////////////////////////////////////////////
-	/*
-
-	struct Ã³·³ ¸â¹ö¸¦ °®´Â °æ¿ì
-	 -> ±âº» Á¦°ø ¿É¼Å ¤¤Àû¿ë X
-	 -> function object ¹æ½Äok
-	 -> operator< ¿À¹ö·Îµù ok
-	*/
-
-	priority_queue<Coord, vector<Coord>, coordCmp> pq;
-
-	pq.push({ 4, 2 });
-	pq.push({ 14, 2 });
-	pq.push({ 4, 12 });
-	pq.push({ 134, 2 });
-	pq.push({ 44, 12 });
-	pq.push({ 64, 2 });
-	pq.push({ 4,72 });
-
-
-
-	while (!pq.empty()) {
-		Coord now = pq.top(); pq.pop();
-		cout << now.y << ", " << now.x << "  ";
-
-	}
-	return 0;
+#include<iostream>
+#include<queue>
+using namespace std;
+
+
+struct Plus {
+	int operator()(int left, int right) const {
+		return left + right;
+	};
+};
+
+struct cmp {
+	bool operator() (int left, int right) const {
+
+		if (left < right) return true;
+		return false;
+
+
+		// ì •ë ¬ì—ì„œëŠ” ì‘ì€ ê°’ ìš°ì„  -> ìš°ì„ ìˆœìœ„ íì— ì ìš©í•˜ë©´ í° ê°’ ìš°ì„ ì´ ë¨
+		// -> sort í•¨ìˆ˜ì— ì •ë ¬ ê¸°ì¤€ í•¨ìˆ˜ë¥¼ ì •í•´ì¤„ ë•Œì™€ ë‹¬ë¦¬ 
+		// ê°€ì¥ ì™¼ìª½ì— ê°€ëŠ” ê°’ì´ ìš°ì„ ìˆœìœ„ê°€ ë‚®ìŒ. 
+		// ì •ë ¬ê³¼ëŠ” !!ë°˜ëŒ€!!ë¡œ í•¨ìˆ˜ ê¸°ì¤€ì´ ì ìš©ë¨
+	};
+};
+
+struct Coord {
+	int y, x;
+
+	// ì´ structì— ã…ëŒ€í•œ ì •ë ¬ ê¸°ì¤€ ë°”ë€” ì¼ ì—†ìœ¼ë©´ struct ë‚´ë¶€ì— êµ¬í˜„
+	bool operator<(Coord right) const {
+		// y í°ã…‹ ê±°ìš°ì„ 
+		if (y < right.y) return true;
+		if (y > right.y) return false;
+
+		// x ì‘ì€ ê±° ìš°ì„ 
+		if (x < right.x) return false;
+		if (x > right.x) return true;
+		return false;
+	}
+};
+
+
+struct coordCmp {
+	// ì •ë ¬ ê¸°ì¤€ ë°”ë€” ì¼ ê³ ë ¤í•˜ë©´ function objectë¡œ
+	bool operator() (Coord left, Coord right) const {
+		// y í° ê²ƒ ìš°ì„ (ìš°ì„ ìˆœìœ„ í ì ìš© ê¸°ì¤€, í° ê²Œ ì˜¤ë¥¸ìª½ìœ¼ë¡œ ê°€ê²Œ)
+		if (left.y < right.y) return true;
+		if (left.y > right.y) return false;
+
+		// x í° ê²ƒ ìš°ì„ 
+		if (left.x < right.x) return true;
+		return false;
+	};
+};
+
+int main() {
+
+	Plus p;
+	int ans = p(1, 2);
+	///////////////////////////////////////////////////////////////////////////////////
+	/*
+
+	ê¸°ë³¸ ë°ì´í„° íƒ€ì…
+	 -> ê¸°ë³¸ ì œê³µ ì˜µì…” ã„´ì ìš© ê°€ëŠ¥ less, greater
+	 -> function object ë°©ì‹(ê°ì²´ë¥¼ í•¨ìˆ˜ì²˜ëŸ¼ ã…†ëŠ” ë°©ì‹)
+	 -> operator< ì˜¤ë²„ë¡œë”© ì•ˆë¨
+	*/
+	
+	priority_queue<int>pq1;	// ìµœëŒ€ê°’ ë£¨íŠ¸
+	
+	// container adapter
+	priority_queue<int, vector<int>, greater<>>pq2;	// ìµœì†Œê°’ ë£¨íŠ¸
+	priority_queue<int, vector<int>, cmp>pq3;	// ìµœëŒ€ê°’ ë£¨íŠ¸
+
+	// ë°ì´í„° ì¶”ê°€
+	// O(logN)
+	//pq.push(1);
+	//pq.push(5);
+	//pq.push(3);
+	//pq.push(2);
+
+	//// ê°€ì¥ ìš°ì„ ìˆœìœ„ ë†’ì€ ê°’ ë³´ê¸°(ê°’ í° ê²Œ default, MaxHeap êµ¬ì¡°)
+	//// O(1)
+	//cout << pq.top() << "\n";
+
+	//// ë°ì´í„° ì‚­ì œ(ë£¨íŠ¸ = ê°€ì¥ ìš°ì„ ìˆœìœ„ ë†’ì€ ê°’)
+	//// O(logN)
+	//pq.pop();
+	//cout << pq.top();
+
+	// íê°€ ë¹„ì—ˆëŠ”ì§€ í™•ì¸
+	//pq.empty();
+
+	// ë°ì´í„° ê´€ë¦¬ : ë°¸ëŸ°ì‹± -> heapify 
+	// O(logN)
+
+
+	/*pq.push(1);
+	pq.push(11);
+	pq.push(13);
+	pq.push(14);
+	pq.push(19);
+	pq.push(21);
+	pq.push(51);
+
+	while (!pq.empty()) {
+		int now = pq.top(); pq.pop();
+		cout << now << " ";
+	}*/
+
+	///////////////////////////////////////////////////////////////////////////////////
+	/*
+
+	struct ì²˜ëŸ¼ ë©¤ë²„ë¥¼ ê°–ëŠ” ê²½ìš°
+	 -> ê¸°ë³¸ ì œê³µ ì˜µì…” ã„´ì ìš© X
+	 -> function object ë°©ì‹ok
+	 -> operator< ì˜¤ë²„ë¡œë”© ok
+	*/
+
+	priority_queue<Coord, vector<Coord>, coordCmp> pq;
+
+	pq.push({ 4, 2 });
+	pq.push({ 14, 2 });
+	pq.push({ 4, 12 });
+	pq.push({ 134, 2 });
+	pq.push({ 44, 12 });
+	pq.push({ 64, 2 });
+	pq.push({ 4,72 });
+
+
+
+	while (!pq.empty()) {
+		Coord now = pq.top(); pq.pop();
+		cout << now.y << ", " << now.x << "  ";
+
+	}
+	return 0;
 }

@@ -17,8 +17,8 @@ using namespace std;
 
 
 int N, M;
-int mat[10][10];
-vector<int> alis[5];
+int mat[15][15];
+vector<int> alis[15];
 
 void dfs(int now) { // 모든 노드를 확인하는 순회의 경우 V^2이 걸린다.
     cout << now << " ";
@@ -76,10 +76,10 @@ struct Node {
     int num;
     int cost;
 };
-vector<Node> al[5];
+vector<Node> al[15];
 int sum;
 
-int dfs5(int now) {
+void dfs5(int now) {
 
     if(now >= N-1) {
         for(int i=0; i<path.size(); i++) {

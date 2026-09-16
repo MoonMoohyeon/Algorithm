@@ -1,0 +1,112 @@
+union_find 알고리즘
+
+disjoint set << 공통 원소가 없는, 상호배타적인 부분집합들로 나눠진 원소들에 대한 자료구조이다
+
+
+make_set(x) : 초기화
+arr[i] = i으로 자기 자신이 루트노드라 초기화한다.
+
+union(x,y) :x가 속한 집합과 y가 속한 집합을 합친다
+<< x,y의 루트 노드를찾고 다르면, y의 루트노드를 x의 루트노드의 자손으로 넣어 두 트리를 합친다.
+
+find(x):x가 속한 집합의 대표값을 반환한다
+
+_________________________________________________________
+void make_set(int x){
+	for(int i=1; i<=x; i++){
+		arr[i] = i;
+	}
+}
+
+void union(int x, int y){
+//x, y의 루트노드를 찾는다.
+	for(;;){
+		if(arr[x] ==x){
+			break;
+		}else{
+			x = arr[x];
+		}
+	}
+
+	for(;;){
+		if(arr[y] ==y){
+			break;
+		}else{
+			y = arr[y];
+		}
+	}
+
+	if(x != y){
+		arr[y] = x;
+	}
+}
+
+
+int find(int x){
+//해당 노드의 루트노드를 찾는다
+	for(;;){
+		if(arr[x] ==x){
+			break;
+		}else{
+			x = arr[x];
+		}
+	}
+
+	return x;
+}
+__________________________________________________________________________________
+시간초과 나는 disjointset 
+union이 만들어 질때, 선형적으로 만들어지면 최악의 경우 루트를 찾는데, O(N)이된다.
+ ex) root < 1 < 2 < 3 < 4 < ... < N이렇게 union이 구성되면 최악!
+
+<< 트리의 구조가 완전 비대칭임으로 최적화해야 한다
+
+<< union에 속하는 정점의 개수가 N개일 때, 완전 비대칭 트리의 경우, 트리의 높이가 N이다. 따라서, 트리의 높이를 줄인다
+
+M1) 같은 집합의 원소들의 부모를 모두  root로 통합시킨다. << find과정에서의 최적화
+
+int find(int x){
+	it(arr[x] == x){
+		return x;
+	}else{	
+		//루트가 아니다.
+		int root = find(arr[x]);
+		arr[x] = root;
+		return root;
+	}
+}
+
+
+M2) union에서의 최적화 << 트리의 높이에 제한을 둔다
+<< rank 배열을 추가하여, 각 집합의 현재 높이를 표기한다.
+
+arr[n_]
+rank[n_];
+
+
+for( int i=1; i<=N; i++){
+	rank[i] = 1;
+}
+
+
+void union(int x, int y){
+	root_x = find(x);
+	root_y = find(y);
+
+	if(root_x != root_y){
+		rank_x = rank[root_x];
+		rank_y = rank[root_y];
+		// 높이가 더 낮은 트리를 높이가 높은 트리에 넣느다.
+		if(rank_x >= rank_y){
+			arr[root_y] = root_x;
+		}else{
+			arr[root_x] = root_y;
+		}
+
+		if(rank_x == rank_y){
+			rank[root_x]++;
+		}
+	}
+}
+
+

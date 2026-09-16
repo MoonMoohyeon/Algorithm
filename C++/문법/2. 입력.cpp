@@ -31,8 +31,8 @@ int main(int argc, char** argv) {
     // cin은 'character input stream'의 약자로, 키보드로부터 데이터가 들어오는 흐름입니다.
     // '>>' (스트림 추출 연산자)를 사용해 스트림에서 데이터를 꺼내 변수에 저장합니다.
     // >> 연산자는 공백(스페이스, 탭, 엔터)을 만나면 입력을 중단합니다.
-    std::cin >> input_number;
-    std::cout << "입력한 숫자: " << input_number << std::endl;
+    std::cin >> input_num;
+    std::cout << "입력한 숫자: " << input_num << std::endl;
 
     std::string input_word;
     std::cout << "단어를 하나 입력하세요 (공백 없는 단어): ";

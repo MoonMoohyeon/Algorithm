@@ -1,0 +1,75 @@
+이분 매칭
+https://m.blog.naver.com/kks227/220807541506
+
+#include <iostream>
+#include<vector>
+using namespace std;
+
+
+const int n_ = 201 + 200;
+int N, M, K;
+int table[n_];
+vector<int> v[201];
+bool visit[201];
+
+
+bool dfs(int prev){
+	if(visit[prev] == 0)
+		visit[prev] = 1;
+	else
+		return 0;
+		
+	int size = v[prev].size();
+	
+	for(int i=0; i<size; i++){
+		if(prev == table[v[prev][i]])
+			continue;
+			
+		if(table[v[prev][i]] != 0){
+			bool ret = dfs(table[v[prev][i]]);
+			
+			if(ret == 1){
+				table[v[prev][i]] = prev;
+				return 1;
+			}else{
+				continue;
+			}
+		}else{
+			table[v[prev][i]] = prev;
+			return 1;
+		}
+	}
+	
+	return 0;
+}
+
+
+
+int main() {
+	cin >> N >> M;
+	
+	for(int i=1; i<=N; i++){
+		int a;
+		cin >> a;
+		for(int j=0; j<a; j++){
+			int b;
+			cin >> b;
+			v[i].push_back({b + 200});
+		}
+	}
+	
+	int ans = 0;
+	for(int i=1; i<=N; i++){
+		int ret = dfs(i);
+		if(ret == 1)
+			ans++;
+			
+		for(int i=1; i<=N; i++){
+			visit[i] = 0;
+		}
+	}
+	
+	
+	cout << ans;
+	return 0;
+}

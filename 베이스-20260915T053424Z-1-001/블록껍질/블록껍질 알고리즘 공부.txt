@@ -1,0 +1,76 @@
+#include <iostream>
+#include<utility>
+#include<algorithm>
+#include<stack>
+using namespace std;
+
+typedef long long ll;
+
+struct state{
+	int x;
+	int y;
+	int p;
+	int q;
+	int idx;
+};
+
+int N;
+struct state p[100001];
+
+bool compare(struct state s1, struct state s2){
+	if(1LL * s1.p * s2.q != 1LL * s1.q * s2.p)
+		return 1LL * s1.p * s2.q < 1LL * s1.q * s2.p;
+		
+	if(s1.y == s2.y)
+		return s1.x < s2.x;
+	return s1.y < s2.y;
+}
+
+ll ccw(int x1, int y1, int x2, int y2, int x3, int y3){
+	return 1LL * (x1*y2 + x2*y3 + x3*y1 - (y1*x2 + y2*x3 + y3*x1));
+}
+
+
+int main() {
+	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+	cin >> N;
+	for(int i=0; i<N; i++){
+		cin >> p[i].x >> p[i].y;
+		p[i].idx = i;
+	}
+	
+	sort(p, p+N, compare);
+	
+	for(int i=1; i<=N; i++){
+		p[i].q = p[i].x - p[0].x;
+		p[i].p = p[i].y - p[0].y;
+	}
+	
+	sort(p+1, p+N, compare);
+	
+	stack<int> s;
+	int next = 0;
+	while (next < N) {
+        while (s.size() >= 2) {
+            int first, second;
+            second = s.top();
+            s.pop();
+            first = s.top();
+			
+			ll ret = ccw(p[first].x, p[first].y, p[second].x, p[second].y, p[next].x, p[next].y);
+            if (ret > 0) {
+            	//시계반대 방향.
+                s.push(second);
+                break;
+            }else if (ret == 0){
+    			break;
+            }
+        }
+ 
+        s.push(next++);
+    }
+	
+	cout << s.size();
+	
+	return 0;
+}

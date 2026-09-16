@@ -1,0 +1,53 @@
+#include<iostream>
+#include<algorithm>
+#include<utility>
+
+using namespace std;
+
+//이상 값중 가장 가까운값을 찾는다
+//idx나 반복자를 출력.
+
+int main(){
+	int arr[10] = {1,2,3,4,5,6,7,8,9, 10};
+	int a = lower_bound(arr, arr+10, 6) - arr; //시작 ~ 끝+1, 찾으려는 값. // a은 idx을 담는다
+	cout << arr[a];
+	return 0;
+}
+__________________________________________________________________________________________________
+
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+#include<vector>
+#include<stack>
+#include<map>
+#include<set>
+#include<queue>
+#include<utility>
+#include<algorithm>
+
+using namespace std;
+
+typedef long long ll;
+typedef unsigned long ul;
+
+const int n_ = 500;
+
+int N, M;
+
+int main(){
+	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+	vector<int> v;
+	for(int i =0;i <10; i++){
+		v.push_back(i);
+	}
+	
+	vector<int>::iterator iter = v.begin();
+	
+	iter = lower_bound(v.begin(), v.end(), 3);
+	cout << *iter ;
+
+
+	return 0;
+}

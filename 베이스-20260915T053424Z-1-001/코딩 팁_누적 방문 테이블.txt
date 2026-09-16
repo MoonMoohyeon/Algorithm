@@ -1,0 +1,87 @@
+https://www.acmicpc.net/problem/14464
+
+방문테이블
+
+누적방문 처리하는 테크닉!
+
+#include<iostream>
+#include<cstring>
+#include<cstdio>
+#include<vector>
+#include<stack>
+#include<map>
+#include<set>
+#include<queue>
+#include<utility>
+#include<algorithm>
+ 
+using namespace std;
+ 
+typedef long long ll;
+typedef unsigned long long ull;
+ 
+const int n_ = 500;
+const int INF = 2100000000;
+
+struct compare{
+	bool operator()(pair<int,int> p1, pair<int,int> p2){
+		return (p1.second - p1.first) > (p2.second - p2.first);
+	}
+};
+ 
+ 
+int N, M; 
+int info[20001];
+int table[20001] = {0,};
+priority_queue<pair<int,int>, vector<pair<int,int>>, compare> pq;
+
+ 
+ 
+int main(){
+	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+	cin >> N >> M;
+ 
+	for(int i=0; i<N; i++)
+		cin >> info[i];
+ 
+	sort(info, info+N, less<int>());
+ 
+	for(int i=0; i<M; i++){
+		int a, b;
+		cin >> a >> b;
+		pq.push({a, b});
+	}
+	
+	int ans = 0;
+	int s = pq.size();
+	//cout << s << '\n';
+	for(int i=1; i<=s; i++){
+		pair<int,int> prev = pq.top();
+		pq.pop();
+		
+		int idx = lower_bound(info, info + N, prev.first) - info;
+		//cout << idx << '\n';
+		
+		for(int j = idx; j < N; j++){
+			if(prev.first <= info[j] && prev.second >= info[j]){
+				table[j] = i; //********************************************   누적하여 표시한다
+			}
+		}
+	}
+	
+	bool v_table[20001] = {0,}; //************************************ 이부분이 중복레벨 처리해준다.
+	for(int i=0; i<N; i++){
+		if(table[i] != 0 && v_table[table[i]] != 1){
+			v_table[table[i]] = 1;
+			ans++;
+		}
+	}
+	
+	cout << ans;
+	return 0;
+}
+
+//소를 움직일수 있게 하는 가능한 닭을 모조리 체크한다 << 질문의 번호를 매겨 해당 닭이 몇번째 질문에 유효한 닭인지 table에 누적하여 표기한다.
+//새로운 소를 채크할 때 값만 바꾸어 체크한다 << 덮어 쓰더라도 ㄱㅊ다 << v_table으로 유일하게 셀것이기 때문이다.
+//단 다 덮어 버리지 않게 조심해야 한다
+ex) table[0 ~10]이 1로 체크 되어있는데, 2번째 질문 체크시 table[0 ~ 11]으로 체크되어 덮어버린 경우. << 2개의 질문의 답이 가능함에도 불구 하고, 1개만 가능하다고 오판할 수 있다.

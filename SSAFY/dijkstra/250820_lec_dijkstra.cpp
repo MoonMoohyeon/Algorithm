@@ -1,140 +1,140 @@
-#include <iostream>
-#include <queue>
-
-using namespace std;
-
-
-/*
-[Dijkstra ¼³°è]
-
-1. »çÀü ÁØºñ
-	- ´ë±â¿­ ÁØºñ
-	- visited ¹è¿­ ÃÊ±âÈ­(ÃÖ´ë°ªÀ» °®µµ·Ï)
-2. ½ÃÀÛ ³ëµå Å¥¿¡ µî·Ï
-
-¾Æ·¡ °úÁ¤ ¹İº¹
-
-3. ¿ì¼± ¼øÀ§ ³ôÀº ³ëµå(now) È®ÀÎ ¹× ÃßÃâ
-	- ÀÌ¹Ì now±îÁöÀÇ Á¤´äÀÌ µé¾î ÀÖÀ½¿¡µµ
-	  °°Àº now.num ¹øÈ£·Î pq °£¼± Á¤º¸°¡ µé¾î¿Ã ¼ö ÀÖÀ½ 
-	  ( ´õ¹Ì Á¦°Å ÄÚµå ÇÊ¿ä )
-4. now -> next ÈÄº¸ Ã£±â
-	- next cost ´©Àû ¿¬»ê ÇÊ¿ä
-	- ÀÌ¹Ì Á¤´ä ¹è¿­¿¡ next.num cost Á¤º¸°¡ ÀÖ´Ù¸é 
-	  ±»ÀÌ pq¿¡ Ãß°¡ X
-	  ( ´õ¹Ì Á¦°Å ÄÚµå ÇÊ¿ä )
-5. next µî·Ï
-
-*/
-
-
-/*
-
-Test Case:
-
-
-10 12
-0 1 23
-0 3 8
-1 2 26
-1 4 100
-2 5 35
-3 4 10
-4 5 50
-4 7 11
-5 6 1
-5 7 777
-5 8 5
-6 9 53
-*/
-
-
-
-////////////////////////////////////////////////////////////////////////////
-
-struct Edge {
-	int num, w;
-
-	bool operator< (Edge right) const {
-		if (w > right.w) return true;
-		if (w < right.w) return false;
-		return false;
-	}
-};
-
-int V, E;
-int dist[20];
-vector<Edge> alis[20];
-
-////////////////////////////////////////////////////////////////////////////
-void dijkstra(int start) {
-
-	// 1. »çÀü ÁØºñ
-	// 1-1. Á¤´ä ¹è¿­(ÇØ´ç ³ëµå±îÁöÀÇ ÃÖ´Ü °Å¸® ÀúÀå¿ë)
-	// 1-2. PQ »ı¼º
-	priority_queue<Edge> pq;
-	for (int i = 0; i < 20; i++) {
-		dist[i] = 21e8;
-	}
-
-	// 2. ½ÃÀÛ ³ëµå Å¥¿¡ µî·Ï
-	dist[start] = 0;
-	pq.push({ start, 0 });
-
-	// ¹İº¹ ÀÛ¾÷
-	while (!pq.empty()) {
-		// 3. ÃÖ»óÀ§ ³ëµå È®ÀÎ ¹× ÃßÃâ
-		//    -> now±îÁöÀÇ ÃÖ´Ü °Å¸®ÀÓÀ» º¸Àå
-		//       ´õ Àú·ÅÇÏ°Ô °¥ ¼ö ÀÖ´Â ¹æ¹ıÀº µîÀåÇÏÁö X
-		Edge now = pq.top(); pq.pop();
-		
-		// ´õ¹Ì Á¦°Å#1
-		// ÀÌÈÄ now·Î °¡´Â °æ·Î°¡ µîÀåÇÑ´Ù¸é ´õ ºñ½Ñ ºñ¿ë¸¸ ³ª¿È
-		if (dist[now.num] < now.w) continue;
-
-
-		// 4. now -> next ÈÄº¸ Ã£±â
-		for (int i = 0; i < alis[now.num].size(); i++) {
-			Edge next = alis[now.num][i];
-			int nextcost = dist[now.num] + next.w; // ´©Àû ÇÕ
-			// ´õ¹Ì Á¦°Å#2
-			// ÀÌ¹Ì µî·ÏµÈ next·Î °¡´Â ºñ¿ëº¸´Ù ÇöÀç °æ·Î ºñ¿ëÀÌ Å©°Å³ª °°À¸¸é ´õ º¼ ÇÊ¿ä ¾øÀ½
-			if (dist[next.num] <= nextcost) continue;
-
-			// 5. next µî·Ï
-			dist[next.num] = nextcost;
-			pq.push({ next.num, nextcost });
-			
-		}
-
-
-	}
-
-	
-
-
-}
-
-////////////////////////////////////////////////////////////////////////////
-
-int main() {
-
-	cin >> V >> E;
-
-
-	for (int i = 0; i < E; i++) {
-		int from, to, cost;
-		cin >> from >> to >> cost;
-		alis[from].push_back({ to, cost });
-		alis[to].push_back({ from,cost });
-	}
-
-	dijkstra(0);
-
-	for (int i = 0; i < V; i++) {
-		cout << i << " ¹ø ³ëµå±îÁöÀÇ ÃÖ´Ü °Å¸® : " << dist[i] << "\n";
-	}
-
-
-	return 0;
+#include <iostream>
+#include <queue>
+
+using namespace std;
+
+
+/*
+[Dijkstra ì„¤ê³„]
+
+1. ì‚¬ì „ ì¤€ë¹„
+	- ëŒ€ê¸°ì—´ ì¤€ë¹„
+	- visited ë°°ì—´ ì´ˆê¸°í™”(ìµœëŒ€ê°’ì„ ê°–ë„ë¡)
+2. ì‹œì‘ ë…¸ë“œ íì— ë“±ë¡
+
+ì•„ë˜ ê³¼ì • ë°˜ë³µ
+
+3. ìš°ì„  ìˆœìœ„ ë†’ì€ ë…¸ë“œ(now) í™•ì¸ ë° ì¶”ì¶œ
+	- ì´ë¯¸ nowê¹Œì§€ì˜ ì •ë‹µì´ ë“¤ì–´ ìˆìŒì—ë„
+	  ê°™ì€ now.num ë²ˆí˜¸ë¡œ pq ê°„ì„  ì •ë³´ê°€ ë“¤ì–´ì˜¬ ìˆ˜ ìˆìŒ 
+	  ( ë”ë¯¸ ì œê±° ì½”ë“œ í•„ìš” )
+4. now -> next í›„ë³´ ì°¾ê¸°
+	- next cost ëˆ„ì  ì—°ì‚° í•„ìš”
+	- ì´ë¯¸ ì •ë‹µ ë°°ì—´ì— next.num cost ì •ë³´ê°€ ìˆë‹¤ë©´ 
+	  êµ³ì´ pqì— ì¶”ê°€ X
+	  ( ë”ë¯¸ ì œê±° ì½”ë“œ í•„ìš” )
+5. next ë“±ë¡
+
+*/
+
+
+/*
+
+Test Case:
+
+
+10 12
+0 1 23
+0 3 8
+1 2 26
+1 4 100
+2 5 35
+3 4 10
+4 5 50
+4 7 11
+5 6 1
+5 7 777
+5 8 5
+6 9 53
+*/
+
+
+
+////////////////////////////////////////////////////////////////////////////
+
+struct Edge {
+	int num, w;
+
+	bool operator< (Edge right) const {
+		if (w > right.w) return true;
+		if (w < right.w) return false;
+		return false;
+	}
+};
+
+int V, E;
+int dist[20];
+vector<Edge> alis[20];
+
+////////////////////////////////////////////////////////////////////////////
+void dijkstra(int start) {
+
+	// 1. ì‚¬ì „ ì¤€ë¹„
+	// 1-1. ì •ë‹µ ë°°ì—´(í•´ë‹¹ ë…¸ë“œê¹Œì§€ì˜ ìµœë‹¨ ê±°ë¦¬ ì €ì¥ìš©)
+	// 1-2. PQ ìƒì„±
+	priority_queue<Edge> pq;
+	for (int i = 0; i < 20; i++) {
+		dist[i] = 21e8;
+	}
+
+	// 2. ì‹œì‘ ë…¸ë“œ íì— ë“±ë¡
+	dist[start] = 0;
+	pq.push({ start, 0 });
+
+	// ë°˜ë³µ ì‘ì—…
+	while (!pq.empty()) {
+		// 3. ìµœìƒìœ„ ë…¸ë“œ í™•ì¸ ë° ì¶”ì¶œ
+		//    -> nowê¹Œì§€ì˜ ìµœë‹¨ ê±°ë¦¬ì„ì„ ë³´ì¥
+		//       ë” ì €ë ´í•˜ê²Œ ê°ˆ ìˆ˜ ìˆëŠ” ë°©ë²•ì€ ë“±ì¥í•˜ì§€ X
+		Edge now = pq.top(); pq.pop();
+		
+		// ë”ë¯¸ ì œê±°#1
+		// ì´í›„ nowë¡œ ê°€ëŠ” ê²½ë¡œê°€ ë“±ì¥í•œë‹¤ë©´ ë” ë¹„ì‹¼ ë¹„ìš©ë§Œ ë‚˜ì˜´
+		if (dist[now.num] < now.w) continue;
+
+
+		// 4. now -> next í›„ë³´ ì°¾ê¸°
+		for (int i = 0; i < alis[now.num].size(); i++) {
+			Edge next = alis[now.num][i];
+			int nextcost = dist[now.num] + next.w; // ëˆ„ì  í•©
+			// ë”ë¯¸ ì œê±°#2
+			// ì´ë¯¸ ë“±ë¡ëœ nextë¡œ ê°€ëŠ” ë¹„ìš©ë³´ë‹¤ í˜„ì¬ ê²½ë¡œ ë¹„ìš©ì´ í¬ê±°ë‚˜ ê°™ìœ¼ë©´ ë” ë³¼ í•„ìš” ì—†ìŒ
+			if (dist[next.num] <= nextcost) continue;
+
+			// 5. next ë“±ë¡
+			dist[next.num] = nextcost;
+			pq.push({ next.num, nextcost });
+			
+		}
+
+
+	}
+
+	
+
+
+}
+
+////////////////////////////////////////////////////////////////////////////
+
+int main() {
+
+	cin >> V >> E;
+
+
+	for (int i = 0; i < E; i++) {
+		int from, to, cost;
+		cin >> from >> to >> cost;
+		alis[from].push_back({ to, cost });
+		alis[to].push_back({ from,cost });
+	}
+
+	dijkstra(0);
+
+	for (int i = 0; i < V; i++) {
+		cout << i << " ë²ˆ ë…¸ë“œê¹Œì§€ì˜ ìµœë‹¨ ê±°ë¦¬ : " << dist[i] << "\n";
+	}
+
+
+	return 0;
 }
