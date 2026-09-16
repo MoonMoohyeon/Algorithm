@@ -55,3 +55,28 @@ $n$보다 작은 모든 음이 아닌 정수 $k$에 대해 알고리즘이 $a^k$
     이 값에 $a$를 곱한 결과는 $a \times a^{2 \times (n-1)/2} = a \times a^{n-1} = a^n$이므로, $n$이 홀수일 때도 알고리즘은 정확합니다.
 
 따라서 수학적 귀납법에 의해 빠른 거듭제곱 알고리즘은 모든 음이 아닌 정수 지수 $n$에 대해 정확한 값을 계산합니다.
+
+
+---
+
+## 💡 코딩테스트 실전 팁 (Cheat Sheet)
+1. **시간 복잡도**: $O(\log n)$으로, 지수 $n$이 $10^{18}$처럼 거대해도 약 60번의 곱셈만으로 계산 완료됩니다.
+2. **모듈러 곱셈 오버플로우 주의**:
+   ```cpp
+   long long result = (half * half) % mod;
+   ```
+   `half`가 $10^9$일 때 `half * half`는 $10^{18}$에 달하므로 반드시 `long long` 자료형을 사용해야 합니다.
+3. **페르마의 소정리 (조합 $nCr \pmod p$)**:
+   - $p$가 소수일 때 $A^{p-1} \equiv 1 \pmod p \implies A^{-1} \equiv A^{p-2} \pmod p$.
+   - 즉, 분모로 나누는 연산 $\frac{1}{B}$은 빠른 거듭제곱을 이용해 $B^{p-2} \pmod p$를 곱하는 것으로 해결합니다.
+
+---
+
+## 🎯 추천 연습 문제 (SWEA & Programmers & BOJ)
+
+| 플랫폼 | 문제 번호 및 제목 | 난이도 | 핵심 풀이 포인트 |
+| :--- | :--- | :---: | :--- |
+| **SWEA** | [1217. [S/W 문제해결 기본] 4일차 - 거듭 제곱](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AV14dUIaAAUCFAYD) | D3 | 재귀 호출을 이용한 거듭 제곱의 기초 원리 학습 |
+| **백준** | [1629. 곱셈](https://www.acmicpc.net/problem/1629) | 실버 1 | $A^B \pmod C$ 빠른 거듭제곱과 모듈러 분배 법칙의 정석 문제 |
+| **백준** | [10830. 행렬 제곱](https://www.acmicpc.net/problem/10830) | 골드 4 | $N \times N$ 행렬의 $B$제곱을 빠른 거듭제곱으로 계산 |
+| **백준** | [11401. 이항 계수 3](https://www.acmicpc.net/problem/11401) | 골드 1 | 페르마 소정리와 빠른 거듭제곱을 결합하여 대규모 조합 $nCr \pmod p$ 계산 |

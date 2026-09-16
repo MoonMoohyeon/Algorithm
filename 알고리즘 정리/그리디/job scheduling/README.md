@@ -51,3 +51,23 @@ Job Scheduling 문제는 **활동 선택 문제(Activity Selection Problem)**라
     * 이는 탐욕해 **A**가 최적해 **S**와 작업의 개수가 같다는 것을 의미합니다. (`k = m`)
 
 따라서, **종료 시간이 빠른 순서로 작업을 선택하는 탐욕적인 접근 방식은 항상 최적의 해를 보장합니다.**
+
+
+---
+
+## 💡 코딩테스트 실전 팁 (Cheat Sheet)
+1. **정렬 기준의 결정**:
+   - 활동 선택(Activity Selection) 문제는 항상 **종료 시간(End Time) 오름차순**으로 정렬해야 합니다!
+   - 종료 시간이 같다면 시작 시간 오름차순으로 정렬합니다.
+2. **그리디 조건 만족 확인**:
+   - "가장 일찍 끝나는 회의를 선택하면, 이후 남은 시간 동안 더 많은 회의를 선택할 수 있다"는 최적 부분 구조가 성립합니다.
+
+---
+
+## 🎯 추천 연습 문제 (SWEA & Programmers & BOJ)
+
+| 플랫폼 | 문제 번호 및 제목 | 난이도 | 핵심 풀이 포인트 |
+| :--- | :--- | :---: | :--- |
+| **백준** | [1931. 회의실 배정](https://www.acmicpc.net/problem/1931) | 골드 5 | 작업 스케줄링(활동 선택)의 전 세계 표준 교과서 문제 |
+| **Programmers** | [단속카메라](https://school.programmers.co.kr/learn/courses/30/lessons/42884) | Lv.3 | 차량 진출 지점 기준으로 정렬 후 카메라 최소 개수 설치 (활동 선택 문제의 직접적인 변형) |
+| **SWEA** | [1970. 쉬운 거스름돈](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AV5Pt83KAYEDFAUq) | D2 | 큰 단위 화폐부터 최대한 거슬러주는 그리디 기초 |

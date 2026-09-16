@@ -519,3 +519,26 @@ Next available resource ID is: 203
   * **`unordered_set`**: 정렬이 필요 없고, **가장 빠른 속도**로 원소의 **존재 여부만 확인**하면 될 때. (대부분의 경우 **첫 번째 선택지**)
   * **`set`**: 원소들이 **자동으로 정렬**되어야 하거나, 특정 값보다 크거나 작은 원소를 찾는 **범위 기반 검색**이 필요할 때.
   * **`multiset`**: `set`의 모든 기능이 필요하지만, **중복된 원소도 저장**해야 하는 특별한 상황일 때.
+
+
+---
+
+## 💡 코딩테스트 실전 팁 (Cheat Sheet)
+1. **`unordered_set` vs `set`**:
+   - 중복 제거 및 단순 존재 여부 검사: `unordered_set` ($O(1)$)
+   - 중복 제거 + 자동 오름차순 정렬 필요: `set` ($O(\log N)$)
+   - 중복 허용 + 정렬 상태 유지: `multiset` ($O(\log N)$)
+2. **`set`에서 `erase` 주의점**:
+   - `multiset`에서 `ms.erase(val)`을 호출하면 값이 `val`인 **모든 원소가 한 번에 삭제**됩니다.
+   - 단 하나의 원소만 삭제하려면 `ms.erase(ms.find(val))`처럼 반복자를 넘겨야 합니다!
+
+---
+
+## 🎯 추천 연습 문제 (SWEA & Programmers & BOJ)
+
+| 플랫폼 | 문제 번호 및 제목 | 난이도 | 핵심 풀이 포인트 |
+| :--- | :--- | :---: | :--- |
+| **Programmers** | [폰켓몬](https://school.programmers.co.kr/learn/courses/30/lessons/1845) | Lv.1 | 포켓몬 종류 번호를 `unordered_set`에 넣어 중복 제거 후 $\min(N/2, set.size())$ 반환 |
+| **Programmers** | [영어 끝말잇기](https://school.programmers.co.kr/learn/courses/30/lessons/12981) | Lv.2 | 이미 등장한 단어인지 여부를 `set`으로 $O(1)$에 체크 |
+| **백준** | [7785. 회사에 있는 사람](https://www.acmicpc.net/problem/7785) | 실버 5 | 사원들의 `enter`/`leave`를 `set`으로 관리하고 역순으로 출력 |
+| **백준** | [1269. 대칭 차집합](https://www.acmicpc.net/problem/1269) | 실버 4 | 두 집합의 합집합 크기 - 교집합 크기 ($A \Delta B$) 계산 |

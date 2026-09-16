@@ -1,67 +1,94 @@
 #include <iostream>
 #include <vector>
-#include <cmath>
-#include <cstring>
 #include <queue>
-#include <stack>
-#include <algorithm>
-#include <utility>
 #include <climits>
+
 using namespace std;
 
-int N, M;
-vector<pair<int,int>> graph[100001];
-priority_queue<pair<int, int>> pq;
-int dist[100001] = { 0, };
+/*
+===================================================================
+ [다익스트라 (Dijkstra) 최단 경로 알고리즘]
+ 
+ 조건: "음수 가중치가 없는" 그래프에서 단일 시작점 최단 경로
+ 시간 복잡도: O((V + E) log V)
+ 
+ 핵심 구현 포인트:
+ 1. min-heap 우선순위 큐 정의:
+    방법 A (권장): priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+                   -> {거리, 노드번호} 형태로 오름차순 자동 정렬
+    방법 B (음수 트릭): priority_queue<pair<int, int>> pq;
+                   -> 거리에 -부호를 붙여서 max-heap을 min-heap처럼 사용
+ 2. 방문 검사 (가지치기):
+    if (cur_dist > dist[cur_node]) continue;
+    -> 이미 더 짧은 경로로 방문된 상태면 스킵 (시간 초과 방지 필수!)
+===================================================================
+*/
 
-int main(int argc, char** argv) {
-    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+const int MAX = 100005;
+const int INF = 1e9; // 또는 INT_MAX / 2 (오버플로우 방지)
 
-    cin >> N >> M; // N = 정점의 개수, M = 간선의 개수
+int N, M; // N: 정점 개수, M: 간선 개수
+vector<pair<int, int>> graph[MAX]; // graph[u] = {{가중치, 도착노드 v}, ...}
+int dist[MAX];
 
-    int a, b, c;
-    for (int i = 0; i < M; i++) { // 인접 리스트 생성
-        cin >> a >> b >> c; // a와 b가 가중치 c의 간선으로 연결됨을 의미한다.
-        graph[a].push_back({ c,b });
-        graph[b].push_back({ c,a }); // 무방향 그래프인 경우, 양쪽에 추가
+// 방법 A: greater를 사용한 직관적인 최소 힙 다익스트라
+void dijkstra(int start) {
+    // 1. 거리 배열 초기화
+    for (int i = 1; i <= N; i++) {
+        dist[i] = INF;
     }
+    dist[start] = 0;
 
-    // dist 배열 초기화 (모든 정점까지의 거리를 무한대로 설정)
-    for (int i = 0; i < 100001; i++) dist[i] = INT_MAX; 
+    // {누적 거리, 현재 노드} 오름차순 최소 힙
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+    pq.push({0, start});
 
-    // 시작 정점 설정. 여기서는 정점 0을 시작 정점으로 가정합니다.
-    // 만약 정점 번호가 1부터 N까지라면, 시작 정점을 1로 설정하고 dist[1] = 0, pq.push({0, 1})로 변경해야 합니다.
-    dist[0] = 0; // 시작 정점 (0번 정점) 자기 자신까지의 거리는 0
-    pq.push({ 0, 0 }); // 우선순위 큐에 {거리, 정점 번호} 형태로 삽입. (최소 힙처럼 사용하기 위해 거리를 음수로 넣습니다.)
-
-    while (!pq.empty()) { // 우선순위 큐가 비어있지 않은 동안 반복
-        int cost = -pq.top().first; // 우선순위 큐에서 꺼낸 가장 작은 가중치 (거리)
-        int pos = pq.top().second; // 현재 방문할 정점의 번호
+    while (!pq.empty()) {
+        int cur_dist = pq.top().first;
+        int cur_node = pq.top().second;
         pq.pop();
 
-        // 현재 꺼낸 거리가 이미 dist[pos]에 기록된 거리보다 크다면, 더 이상 처리할 필요가 없습니다.
-        // 이는 이미 더 짧은 경로를 찾았다는 의미이므로, 중복 처리를 방지합니다.
-        if (cost > dist[pos]) continue;
+        // [가지치기] 이미 처리된 거리보다 길다면 무시
+        if (cur_dist > dist[cur_node]) continue;
 
-        // 현재 정점(pos)과 연결된 모든 간선을 확인
-        for (auto it = graph[pos].begin(); it != graph[pos].end(); it++) {
-            int next_edge_weight = it->first; // 현재 정점(pos)에서 다음 정점(npos)까지의 간선 가중치
-            int npos = it->second; // 다음 정점의 번호
+        // 인접 노드 탐색
+        for (auto& edge : graph[cur_node]) {
+            int weight = edge.first;
+            int next_node = edge.second;
+            int next_dist = cur_dist + weight;
 
-            int new_cost = cost + next_edge_weight; // 시작 정점부터 npos까지의 새로운 총 거리 계산
-
-            // 새로운 총 거리가 현재 npos에 기록된 최단 거리보다 짧으면 갱신
-            if (new_cost < dist[npos]) {
-                dist[npos] = new_cost; // npos까지의 최단 거리 갱신
-                pq.push({ -new_cost, npos }); // 갱신된 거리와 정점 번호를 큐에 삽입 (최소 힙처럼 사용하기 위해 거리를 음수로)
+            // 더 짧은 경로를 발견한 경우 거리 갱신 및 큐에 삽입
+            if (next_dist < dist[next_node]) {
+                dist[next_node] = next_dist;
+                pq.push({next_dist, next_node});
             }
         }
     }
+}
 
-    for (int i = 0; i < N; i++) {
-        cout << dist[i] << " ";
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    // 예시: 5개 정점, 6개 간선 (1-based)
+    N = 5; M = 6;
+    int start_node = 1;
+
+    // {가중치, 도착 노드}
+    graph[1].push_back({2, 2});
+    graph[1].push_back({3, 3});
+    graph[2].push_back({4, 3});
+    graph[2].push_back({5, 4});
+    graph[3].push_back({6, 4});
+    graph[4].push_back({1, 5});
+
+    dijkstra(start_node);
+
+    cout << "시작 정점 " << start_node << "로부터의 최단 거리:\n";
+    for (int i = 1; i <= N; i++) {
+        if (dist[i] == INF) cout << i << "번 노드: 도달 불가\n";
+        else cout << i << "번 노드: " << dist[i] << "\n";
     }
-    cout << endl;
 
     return 0;
 }

@@ -26,7 +26,7 @@ vector<int> KMP(const string& text, const string& pattern) {
     vector<int> output;
     vector<int> pi = computePi(pattern);
     vector<int> result; // 패턴이 나타난 위치 저장
-    int i, j = 0; // 패턴의 비교 인덱스
+    int j = 0; // 패턴의 비교 인덱스
 
     for (int i = 0; i < n; i++) {
         while (j > 0 && text[i] != pattern[j])

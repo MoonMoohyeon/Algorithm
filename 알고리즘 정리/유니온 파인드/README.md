@@ -124,3 +124,32 @@ void union_sets(int a, int b) {
   * **그래프의 연결 요소 (Connected Components)**: 그래프의 노드들을 순회하며 같은 연결 요소에 속하는지 판별하고 그룹화할 수 있습니다.
   * **네트워크 연결성 문제**: 두 단말기(노드)가 서로 연결되어 있는지 확인하는 데 사용됩니다.
   * **사이클 탐지 (Cycle Detection)**: 무방향 그래프에서 `union` 연산 시 두 원소가 이미 같은 집합에 속해 있다면, 이들을 연결하는 간선은 사이클을 형성합니다.
+
+
+---
+
+## 💡 코딩테스트 실전 팁 (Cheat Sheet)
+1. **경로 압축 (Path Compression) 한 줄 구현**:
+   ```cpp
+   int find(int x) {
+       if (parent[x] == x) return x;
+       return parent[x] = find(parent[x]); // 루트로 직접 연결
+   }
+   ```
+2. **부모 초기화 잊지 말기**:
+   - `for (int i = 1; i <= N; i++) parent[i] = i;`
+3. **`union_sets(a, b)`에서 루트 비교**:
+   - 반드시 `rootA = find(a); rootB = find(b);`로 루트를 구한 뒤 `if (rootA != rootB) parent[rootB] = rootA;` 해야 합니다! 원소 `a`, `b` 자체를 직접 연결하면 트리가 망가집니다.
+4. **무방향 그래프 사이클 판별**: `find(a) == find(b)`인데 두 노드를 잇는 간선이 추가되면 즉시 사이클이 형성됩니다.
+
+---
+
+## 🎯 추천 연습 문제 (SWEA & Programmers & BOJ)
+
+| 플랫폼 | 문제 번호 및 제목 | 난이도 | 핵심 풀이 포인트 |
+| :--- | :--- | :---: | :--- |
+| **SWEA** | [3289. 서로소 집합](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AWBJKA6qr2oDFAWr) | D4 | SWEA 대표 서로소 집합 문제 (합집합 연산 0, 같은 집합 확인 연산 1) |
+| **SWEA** | [7465. 창용 마을 무리의 개수](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AWngfZVaAcMDFAQU) | D4 | 마을 사람들의 친분 관계 그래프에서 독립된 무리(연결 요소)의 개수 세기 |
+| **Programmers** | [네트워크](https://school.programmers.co.kr/learn/courses/30/lessons/43162) | Lv.3 | 컴퓨터 연결 정보로부터 독립된 네트워크 개수를 유니온 파인드(또는 DFS/BFS)로 도출 |
+| **백준** | [1717. 집합의 표현](https://www.acmicpc.net/problem/1717) | 골드 5 | 유니온 파인드 표준 입출력 문제 |
+| **백준** | [20040. 사이클 게임](https://www.acmicpc.net/problem/20040) | 골드 4 | 간선이 추가될 때 몇 번째 차례에서 처음으로 사이클이 완성되는지 판별 |

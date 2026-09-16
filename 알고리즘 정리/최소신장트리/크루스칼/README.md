@@ -63,3 +63,24 @@
     1.  `weight(e) < weight(f)` 라면, `M'`의 가중치는 `M`보다 작습니다. 이는 `M`이 최소 신장 트리라는 최초의 가정에 **모순**됩니다.
     2.  `weight(e) = weight(f)` 라면, `M'` 역시 `M`과 같은 가중치를 가지는 또 다른 MST입니다.
   * 결론적으로, 크루스칼 알고리즘이 만든 트리 `T`가 MST가 아니라는 가정은 모순을 일으킵니다. 따라서 **크루스칼 알고리즘으로 찾은 트리 `T`는 항상 최소 신장 트리임이 증명됩니다.**
+
+
+---
+
+## 💡 코딩테스트 실전 팁 (Cheat Sheet)
+1. **크루스칼 vs 프림 선택 기준**:
+   - 간선의 수가 적은 **희소 그래프 (Sparse Graph, $E \approx V$)**: 크루스칼 ($O(E \log E)$)이 구현도 간단하고 유리합니다.
+   - 간선의 수가 많은 **밀집 그래프 (Dense Graph, $E \approx V^2$)**: 프림 ($O(V^2)$ 또는 $O(E \log V)$)이 유리합니다.
+2. **가중치 합 오버플로우 주의**: 간선 가중치의 합이 `int` 범위를 넘을 수 있으므로 MST 가중치 합 변수는 반드시 `long long`으로 선언합니다.
+3. **간선 정렬**: 구조체나 `vector<pair<int, pair<int, int>>>`를 활용해 가중치 기준 오름차순 정렬을 수행합니다.
+
+---
+
+## 🎯 추천 연습 문제 (SWEA & Programmers & BOJ)
+
+| 플랫폼 | 문제 번호 및 제목 | 난이도 | 핵심 풀이 포인트 |
+| :--- | :--- | :---: | :--- |
+| **SWEA** | [3124. 최소 스패닝 트리](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AV_mSnmKUAYDFAWb) | D4 | SWEA 대표 MST 문제. 가중치 합이 32비트 범위를 초과하므로 long long 누적 필수 |
+| **Programmers** | [섬 연결하기](https://school.programmers.co.kr/learn/courses/30/lessons/42861) | Lv.3 | 프로그래머스 대표 그리디/크루스칼 문제. 다리를 건설하여 모든 섬을 연결하는 최소 비용 구하기 |
+| **백준** | [1197. 최소 스패닝 트리](https://www.acmicpc.net/problem/1197) | 골드 4 | 크루스칼 알고리즘 정석 구현 문제 |
+| **백준** | [1922. 네트워크 연결](https://www.acmicpc.net/problem/1922) | 골드 4 | 모든 컴퓨터를 연결하는 최소 비용 트리 구축 |

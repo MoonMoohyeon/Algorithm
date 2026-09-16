@@ -209,3 +209,33 @@ visited[i] = false;   // (2) 해당 숫자를 '방문하지 않음' 상태로 �
 이제 `generatePermutation(0)`의 for문은 `i = 2`부터 다시 시작할 수 있습니다. `visited[1]`이 `false`로 복원되었기 때문에, `2`로 시작하는 `[2, 1]`, `[2, 3]` 등의 새로운 경로를 문제없이 탐색할 수 있게 됩니다.
 
 이처럼 **백트랙**은 하나의 선택으로 파생된 모든 탐색을 마친 뒤, 그 선택 자체를 없었던 일로 하고 이전 상태로 돌아가 다음 선택지를 탐색하게 해주는, 모든 경우의 수를 탐색하기 위한 **필수적인 후처리 작업**이라고 할 수 있습니다.
+
+
+---
+
+## 💡 코딩테스트 실전 팁 (Cheat Sheet)
+1. **순열 vs 조합 템플릿 차이**:
+   - **순열**: 순서가 중요하므로 매번 `1`부터 `N`까지 확인하며 `visited` 배열로 중복 선택 방지.
+   - **조합**: 순서가 상관없으므로 매개변수로 `start`를 넘겨주어 `for (int i = start; i <= N; i++)`로 항상 다음 숫자만 선택.
+2. **백트래킹의 3단계 공식**:
+   ```cpp
+   visited[i] = true; result.push_back(arr[i]); // 1. 상태 변경
+   dfs(depth + 1);                              // 2. 재귀 호출
+   result.pop_back(); visited[i] = false;       // 3. 상태 원상 복구 (백트랙)
+   ```
+3. **시간 복잡도 암기**:
+   - 순열: $O(N!)$ ($N \le 10$ 내외에서만 사용 가능)
+   - 조합: $O(2^N)$ 또는 $O(\binom{N}{R})$ ($N \le 20$ 내외에서만 사용 가능)
+
+---
+
+## 🎯 추천 연습 문제 (SWEA & Programmers & BOJ)
+
+| 플랫폼 | 문제 번호 및 제목 | 난이도 | 핵심 풀이 포인트 |
+| :--- | :--- | :---: | :--- |
+| **SWEA** | [5215. 햄버거 다이어트](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AWT-lAU6IH4DFAVT) | D3 | 칼로리 제한 이하에서 가장 높은 선호도 점수를 얻는 조합/부분집합 백트래킹 |
+| **SWEA** | [4012. [모의 SW 역량테스트] 요리사](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AWIeArG6ACMDFAVU) | 모의역량 | $N$개의 식재료를 $N/2$개씩 두 그룹으로 나누는 조합 백트래킹 후 맛 차이 최소화 |
+| **Programmers** | [피로도](https://school.programmers.co.kr/learn/courses/30/lessons/87946) | Lv.2 | 던전 탐험 순서를 순열 백트래킹으로 모두 탐색하여 최대 탐험 던전 수 계산 |
+| **Programmers** | [소수 찾기](https://school.programmers.co.kr/learn/courses/30/lessons/42839) | Lv.2 | 숫자 카드로 만들 수 있는 모든 순열을 백트래킹으로 생성 후 소수 판별 |
+| **백준** | [15649. N과 M (1)](https://www.acmicpc.net/problem/15649) | 실버 3 | 중복 없는 순열 생성 기본기 훈련 |
+| **백준** | [15650. N과 M (2)](https://www.acmicpc.net/problem/15650) | 실버 3 | 오름차순 조합 생성 기본기 훈련 |

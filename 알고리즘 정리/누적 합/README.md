@@ -80,3 +80,25 @@ $$S[j] - S[i-1] = A[i] + \dots + A[j]$$
 $$\therefore \sum_{k=i}^{j} A[k] = S[j] - S[i-1]$$
 
 따라서 누적 합 배열을 미리 계산해두면, 어떤 길이의 구간 합이든 단 한 번의 뺄셈 연산(`O(1)`)으로 정확하게 구할 수 있음이 증명됩니다. ✅
+
+
+---
+
+## 💡 코딩테스트 실전 팁 (Cheat Sheet)
+1. **1-based 인덱스 사용**: 누적 합 배열을 만들 때 인덱스 0을 빈 공간(`psum[0] = 0`)으로 두면, 구간 `[L, R]`의 합을 `psum[R] - psum[L-1]`로 예외 처리(`if (L == 0)`) 없이 깔끔하게 계산할 수 있습니다.
+2. **2차원 구간 합 공식 암기**:
+   - 테이블 구축: `psum[i][j] = psum[i-1][j] + psum[i][j-1] - psum[i-1][j-1] + arr[i][j]`
+   - 구간 쿼리 `(x1, y1) ~ (x2, y2)`: `psum[x2][y2] - psum[x1-1][y2] - psum[x2][y1-1] + psum[x1-1][y1-1]`
+3. **차분 배열 (IMOS법)**: 어떤 직사각형 영역에 일괄적으로 $+k$를 더하는 쿼리가 수십만 번 주어질 때는 4개 모서리에 $+k, -k$를 표시한 후, 마지막에 2차원 누적 합을 1회 수행하여 $O(1)$에 처리합니다.
+
+---
+
+## 🎯 추천 연습 문제 (SWEA & Programmers & BOJ)
+
+| 플랫폼 | 문제 번호 및 제목 | 난이도 | 핵심 풀이 포인트 |
+| :--- | :--- | :---: | :--- |
+| **SWEA** | [2001. 파리 퇴치](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AV5PzOCKAigDFAUq) | D2 | 2차원 $M \times M$ 영역 파리 수 합의 최댓값 구하기 (2차원 누적 합 기본) |
+| **Programmers** | [파괴되지 않은 건물](https://school.programmers.co.kr/learn/courses/30/lessons/92344) | Lv.3 | 2022 카카오 블라인드 기출. 2차원 차분 배열(IMOS법)로 $O(K \cdot N \cdot M)$을 $O(K + NM)$으로 단축 |
+| **Programmers** | [연속 펄스 부분 수열의 합](https://school.programmers.co.kr/learn/courses/30/lessons/161988) | Lv.3 | 누적 합의 최대값 - 최소값을 이용하여 $O(N)$에 최대 부분합 탐색 |
+| **백준** | [11659. 구간 합 구하기 4](https://www.acmicpc.net/problem/11659) | 실버 3 | 1차원 누적 합의 가장 전형적인 $O(1)$ 구간 쿼리 문제 |
+| **백준** | [11660. 구간 합 구하기 5](https://www.acmicpc.net/problem/11660) | 실버 1 | 2차원 직사각형 구간 합 공식 체득 필수 문제 |

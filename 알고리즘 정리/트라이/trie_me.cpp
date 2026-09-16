@@ -1,87 +1,93 @@
 #include <iostream>
-#include <cstdlib>
-#include <cmath>
+#include <string>
+#include <vector>
 #include <cstring>
-#include <queue>
-#include <stack>
-#include <algorithm>
-#include <utility>
-#include <unordered_map>
-#include <climits>
+
 using namespace std;
 
-const int MAX_NODES = 5000005;
-const int ALPHABET_SIZE = 26;
+/*
+===================================================================
+ [트라이 (Trie / Prefix Tree) 템플릿]
+ 
+ 특징: 문자열 삽입/검색 O(L) (L = 문자열 길이)
+ 메모리 설정 주의:
+   - MAX_NODES = (최대 단어 개수 * 최대 단어 길이) + 1
+   - 예: 단어 10,000개, 길이 10글자 -> MAX_NODES = 100,005 (약 10MB)
+   - 500만 크기 배열을 잡으면 500MB를 초과하여 메모리 초과(MLE) 발생하므로
+     문제의 N * L 제약 조건에 맞춰 크기를 적절히 조절해야 합니다.
+===================================================================
+*/
 
-int N, M;
+const int MAX_NODES = 100005;
+const int ALPHABET_SIZE = 26;
 
 int trie[MAX_NODES][ALPHABET_SIZE];
 bool is_end[MAX_NODES];
-int node_count;
+int node_count = 1; // 0번 노드는 루트 노드
 
+// 테스트케이스가 여러 개일 때 초기화 함수
 void init() {
-    memset(trie, 0, sizeof(trie));
-    memset(is_end, false, sizeof(is_end));
+    for (int i = 0; i < node_count; i++) {
+        memset(trie[i], 0, sizeof(trie[i]));
+        is_end[i] = false;
+    }
     node_count = 1;
 }
 
-void insert(string& str) {
-    int current_node = 0;
-
-    for (int i = 0; i < str.size(); i++) {
-        int c = str[i] - 'a';
-
-        if (trie[current_node][c] == 0) { // 현재 노드에서 다음 문자로 가는 경로가 없는 경우
-            trie[current_node][c] = node_count++; // 새로 생성한다.
+// 문자열 삽입 함수
+void insert(const string& str) {
+    int cur = 0; // 루트에서 시작
+    for (char ch : str) {
+        int c = ch - 'a';
+        if (trie[cur][c] == 0) {
+            trie[cur][c] = node_count++;
         }
-
-        current_node = trie[current_node][c]; // 있으면 노드를 타고 내려가 이동한다.
+        cur = trie[cur][c];
     }
-
-    is_end[current_node] = true; // 문자열의 끝에 도달했음을 표시한다.
+    is_end[cur] = true; // 단어 끝 표시
 }
 
-bool search(string& str) {
-    int current_node = 0;
-
-    for (int i = 0; i < str.size(); i++) {
-        int c = str[i] - 'a';
-
-        if (trie[current_node][c] == 0) { // 다음 문자로 가는 경로가 없는 경우 트라이에 없는 것.
-            return false;
-        }
-
-        current_node = trie[current_node][c]; // 있으면 노드를 타고 내려간다.
+// 완전 일치 검색 함수 (해당 단어가 완전히 등록되어 있는가?)
+bool search(const string& str) {
+    int cur = 0;
+    for (char ch : str) {
+        int c = ch - 'a';
+        if (trie[cur][c] == 0) return false;
+        cur = trie[cur][c];
     }
-
-    //return is_end[current_node]; // 끝까지 도달했을 때, 단어의 끝 플래그가 있는 경우 단어를 찾은 것
-    
-    return true; // 접두사가 일치하는 것을 찾는 문제이므로 수정
+    return is_end[cur];
 }
 
-int main(int argc, char** argv) {
+// 접두사 검색 함수 (해당 문자열로 시작하는 단어가 존재하는가?)
+bool startsWith(const string& prefix) {
+    int cur = 0;
+    for (char ch : prefix) {
+        int c = ch - 'a';
+        if (trie[cur][c] == 0) return false;
+        cur = trie[cur][c];
+    }
+    return true; // 경로만 존재하면 접두사 만족
+}
+
+int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-    cout.tie(NULL);
 
-    cin >> N >> M;
     init();
-    for (int i = 0; i < N; i++) {
-        string str;
-        cin >> str;
-        insert(str);
-    }
 
-    int cnt = 0;
-    for (int i = 0; i < M; i++) {
-        string str;
-        cin >> str;
-        if (search(str) == true) {
-            cnt++;
-        }
-    }
+    // 단어 사전에 등록
+    insert("apple");
+    insert("apply");
+    insert("banana");
+    insert("ban");
 
-    cout << cnt;
+    cout << boolalpha;
+    cout << "--- [Trie 검색 테스트] ---\n";
+    cout << "search('apple'): " << search("apple") << "\n";     // true
+    cout << "search('app'): " << search("app") << "\n";         // false (단어 끝 아님)
+    cout << "startsWith('app'): " << startsWith("app") << "\n"; // true (apple, apply의 접두사)
+    cout << "search('ban'): " << search("ban") << "\n";         // true
+    cout << "search('band'): " << search("band") << "\n";       // false
 
     return 0;
 }

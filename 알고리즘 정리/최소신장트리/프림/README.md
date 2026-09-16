@@ -45,3 +45,25 @@
 
   * 위 결과는 `M`이 최소 가중치를 갖는 MST라는 최초의 가정에 **모순**되거나, `M'` 역시 `M`과 같은 가중치를 갖는 또 다른 MST임을 보여줍니다.
   * 결론적으로, `T`가 MST가 아니라는 가정은 모순을 일으킵니다. 따라서 **프림 알고리즘으로 찾은 트리 `T`는 항상 최소 신장 트리임이 증명됩니다.**
+
+
+---
+
+## 💡 코딩테스트 실전 팁 (Cheat Sheet)
+1. **우선순위 큐(Min-Heap) 활용**:
+   - `priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;`
+   - `{간선 가중치, 도착 노드}` 형태로 삽입하여 가장 작은 가중치 간선을 먼저 꺼냅니다.
+2. **방문 체크 타이밍**:
+   - 큐에서 꺼냈을 때 이미 방문한 노드라면 즉시 `continue`로 스킵합니다 (`if (visited[cur]) continue;`).
+3. **SWEA 1251 (하나로) 특화**: 모든 정점 쌍 사이에 간선이 존재하는 완전 그래프($E = V(V-1)/2$)에서는 프림 알고리즘이 메모리와 실행 속도 면에서 압도적으로 유리합니다.
+
+---
+
+## 🎯 추천 연습 문제 (SWEA & Programmers & BOJ)
+
+| 플랫폼 | 문제 번호 및 제목 | 난이도 | 핵심 풀이 포인트 |
+| :--- | :--- | :---: | :--- |
+| **SWEA** | [1251. [S/W 문제해결 응용] 4일차 - 하나로](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AV15StKqAQkCFAYD) | D4 | SWEA 대표 MST 문제. 모든 섬 사이의 거리 제곱에 환경 부담금을 곱한 밀집 그래프이므로 프림 알고리즘 최적합 |
+| **SWEA** | [3124. 최소 스패닝 트리](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AV_mSnmKUAYDFAWb) | D4 | 크루스칼뿐 아니라 프림(우선순위 큐) 방식으로도 풀이 연습 가능 |
+| **백준** | [1197. 최소 스패닝 트리](https://www.acmicpc.net/problem/1197) | 골드 4 | 우선순위 큐를 이용한 프림 알고리즘 구현 검증 |
+| **백준** | [16398. 행성 연결](https://www.acmicpc.net/problem/16398) | 골드 4 | $N \times N$ 인접 행렬 형태의 밀집 그래프 MST 문제 |

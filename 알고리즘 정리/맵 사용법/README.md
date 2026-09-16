@@ -670,3 +670,26 @@ After 13:00, the next event is at 14:00 (Code Review)
 
   * **속도가 최우선**이고 **정렬이 필요 없다면**? → \*\*`unordered_map`\*\*을 씁니다. (대부분의 경우)
   * **Key를 기준으로 정렬**해야 하거나, **범위 기반 검색**이 필요하다면? → \*\*`map`\*\*을 씁니다.
+
+
+---
+
+## 💡 코딩테스트 실전 팁 (Cheat Sheet)
+1. **`unordered_map` vs `map` 선택**:
+   - **`unordered_map`**: 해시 기반으로 평균 $O(1)$의 삽입/조회 속도를 가집니다. 정렬이 필요 없는 95%의 코딩테스트 문제에서 기본 선택지입니다.
+   - **`map`**: Red-Black Tree 기반으로 키가 항상 오름차순 정렬됩니다. 정렬 순서대로 순회하거나 `lower_bound`/`upper_bound` 범위 검색이 필요할 때만 사용합니다.
+2. **`[]` 연산자 주의사항**:
+   - `map[key]`로 조회할 때 해당 `key`가 없으면 기본값(`0`, `""` 등)으로 자동 생성되어 맵의 크기(`size()`)가 커집니다.
+   - 단순히 존재하는지만 확인할 때는 반드시 `if (m.find(key) != m.end())` 또는 `if (m.count(key))`를 사용하세요.
+
+---
+
+## 🎯 추천 연습 문제 (SWEA & Programmers & BOJ)
+
+| 플랫폼 | 문제 번호 및 제목 | 난이도 | 핵심 풀이 포인트 |
+| :--- | :--- | :---: | :--- |
+| **Programmers** | [완주하지 못한 선수](https://school.programmers.co.kr/learn/courses/30/lessons/42576) | Lv.1 | 참가자 이름을 키로 하여 빈도수를 세고 완주자를 차감하는 해시 맵 기본기 |
+| **Programmers** | [의상](https://school.programmers.co.kr/learn/courses/30/lessons/42578) | Lv.2 | 의상 종류별 개수를 맵으로 카운팅한 후 $(N_1+1)(N_2+1)\dots - 1$ 계산 |
+| **Programmers** | [베스트앨범](https://school.programmers.co.kr/learn/courses/30/lessons/42579) | Lv.3 | 장르별 재생 수 합산 맵 + 장르 내 노래별 정렬 복합 해시 문제 |
+| **Programmers** | [신고 결과 받기](https://school.programmers.co.kr/learn/courses/30/lessons/92334) | Lv.1 | 2022 카카오 블라인드 기출. 유저별 피신고자 목록 맵과 정지 메일 발송 카운트 |
+| **백준** | [1620. 나는야 포켓몬 마스터 이다솜](https://www.acmicpc.net/problem/1620) | 실버 4 | 번호 $\to$ 이름, 이름 $\to$ 번호 양방향 빠른 조회를 위한 해시 맵 활용 |

@@ -102,3 +102,28 @@ void postorderTraversal(Node* root) {
 | **전위 (Pre-order)** | **`루트`** → 왼쪽 → 오른쪽        | `1 2 4 5 3`         | 트리 복사, 접두사 표기법             |
 | **중위 (In-order)** | 왼쪽 → **`루트`** → 오른쪽        | `4 2 5 1 3`         | 이진 탐색 트리의 오름차순 정렬       |
 | **후위 (Post-order)**| 왼쪽 → 오른쪽 → **`루트`** | `4 5 2 3 1`         | 트리 삭제(메모리 해제), 후위 표기법 |
+
+
+---
+
+## 💡 코딩테스트 실전 팁 (Cheat Sheet)
+1. **순회 순서 한눈에 외우기 (루트의 위치 기준)**:
+   - **전위(Pre-order)**: **루트** $\to$ 왼쪽 $\to$ 오른쪽
+   - **중위(In-order)**: 왼쪽 $\to$ **루트** $\to$ 오른쪽 (이진 탐색 트리 순회 시 오름차순 정렬됨!)
+   - **후위(Post-order)**: 왼쪽 $\to$ 오른쪽 $\to$ **루트** (자식 노드들의 계산 결과를 취합하는 수식 계산, 서브트리 크기 계산에 사용)
+2. **배열 기반 완전 이진 트리 표현**:
+   - 노드 $i$의 왼쪽 자식: $2i$
+   - 노드 $i$의 오른쪽 자식: $2i + 1$
+   - 노드 $i$의 부모: $i / 2$
+
+---
+
+## 🎯 추천 연습 문제 (SWEA & Programmers & BOJ)
+
+| 플랫폼 | 문제 번호 및 제목 | 난이도 | 핵심 풀이 포인트 |
+| :--- | :--- | :---: | :--- |
+| **SWEA** | [1231. [S/W 문제해결 기본] 9일차 - 중위순회](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AV140YnqAIECFAYD) | D4 | 완전 이진 트리에서 중위 순회를 수행하여 알파벳 단어를 복원하는 SWEA 대표 문제 |
+| **SWEA** | [1232. [S/W 문제해결 기본] 9일차 - 사칙연산](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AV1415rKb1ECFAYD) | D4 | 사칙연산 수식 트리를 후위 순회 방식으로 계산하는 대표 응용 문제 |
+| **SWEA** | [1233. [S/W 문제해결 기본] 9일차 - 사칙연산 유효성 검사](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AV1411qmAIACFAYD) | D4 | 단말 노드는 피연산자, 내부 노드는 연산자여야 한다는 트리 순회 유효성 검사 |
+| **백준** | [1991. 트리 순회](https://www.acmicpc.net/problem/1991) | 실버 1 | 전위, 중위, 후위 순회 결과를 모두 출력하는 기본 정석 문제 |
+| **Programmers** | [길 찾기 게임](https://school.programmers.co.kr/learn/courses/30/lessons/42892) | Lv.3 | 2019 카카오 블라인드 기출. 좌표로부터 이진 트리 구성 후 전위/후위 순회 결과 반환 |

@@ -137,3 +137,29 @@ $d\_{true}(w) = d\_{true}(u) + \\text{weight}(u,w) = d(u) + \\text{weight}(u,w)$
 따라서 다익스트라 알고리즘은 항상 올바른 최단 경로를 찾습니다.
 
 -----
+
+
+---
+
+## 💡 코딩테스트 실전 팁 (Cheat Sheet)
+1. **우선순위 큐 선언 방식**:
+   - `priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;` (오름차순 최소 힙)
+   - 큐에 넣는 원소는 반드시 `{거리, 노드번호}` 순서로 배치해야 첫 번째 원소(거리)를 기준으로 정렬됩니다.
+2. **중복 방문 가지치기 (필수!)**:
+   ```cpp
+   if (cur_dist > dist[cur_node]) continue;
+   ```
+   이 검사를 빼먹으면 이미 더 짧은 경로로 처리된 노드를 다시 탐색하여 시간 초과(TLE)가 발생합니다.
+3. **가중치 오버플로우 주의**: 거리의 합이 `int` 범위를 초과할 가능성이 있다면 `dist` 배열과 거리를 `long long`으로 선언해야 합니다.
+
+---
+
+## 🎯 추천 연습 문제 (SWEA & Programmers & BOJ)
+
+| 플랫폼 | 문제 번호 및 제목 | 난이도 | 핵심 풀이 포인트 |
+| :--- | :--- | :---: | :--- |
+| **SWEA** | [1249. [S/W 문제해결 응용] 4일차 - 보급로](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AV15QRX6APsCFAYD) | D4 | SWEA 대표 문제. 2차원 격자에서 복구 시간(가중치) 최소 비용 경로를 다익스트라로 탐색 |
+| **Programmers** | [배달](https://school.programmers.co.kr/learn/courses/30/lessons/12978) | Lv.2 | 1번 마을에서 출발하여 음식 배달 시간이 $K$ 이하인 마을 개수 구하기 (다익스트라 정석) |
+| **Programmers** | [합승 택시 요금](https://school.programmers.co.kr/learn/courses/30/lessons/72413) | Lv.3 | 2021 카카오 블라인드 기출. $S, A, B$ 3개 정점에서 다익스트라를 수행하여 $S \to K + K \to A + K \to B$ 최소 비용 계산 |
+| **백준** | [1753. 최단경로](https://www.acmicpc.net/problem/1753) | 골드 4 | 방향 그래프 단일 시작점 최단 경로 표준 문제 |
+| **백준** | [1916. 최소비용 구하기](https://www.acmicpc.net/problem/1916) | 골드 5 | 도시 간 이동 최소 비용 계산 |

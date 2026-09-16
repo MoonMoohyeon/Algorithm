@@ -70,3 +70,26 @@
 3.  **종료 조건 (Termination)**: 루프는 `L` 또는 `R` 배열 중 하나의 모든 원소가 `A`로 복사되었을 때 종료됩니다. 종료 후, 남아있는 배열의 원소들은 이미 `A`에 복사된 모든 원소보다 큽니다. 이 남은 원소들을 순서대로 `A`의 뒷부분에 복사하면, `A`의 전체 범위가 올바르게 정렬됩니다.
 
 결론적으로 `merge` 함수는 두 정렬된 부분 배열을 정확하게 하나의 정렬된 배열로 병합합니다. 따라서 귀납적 단계가 성립하며, 병합 정렬은 모든 크기의 배열에 대해 정확하게 동작함이 증명됩니다.
+
+
+---
+
+## 💡 코딩테스트 실전 팁 (Cheat Sheet)
+1. **시간 복잡도 보장**: 퀵 정렬(Quick Sort)은 최악의 경우 $O(N^2)$으로 느려질 수 있지만, 병합 정렬은 **어떤 데이터가 들어와도 최선/평균/최악 $O(N \log N)$을 보장**합니다.
+2. **전역 임시 버퍼 필수**:
+   - `merge()` 함수 내부에서 `vector<int>`를 매번 새로 할당하면 메모리 할당 시간 오버헤드로 TLE가 발생합니다.
+   - 반드시 전역 배열 `int temp[MAX];`를 선언하고 인덱스를 재활용해야 합니다.
+3. **Inversion Counting (역순 쌍 세기)**:
+   - 두 부분 배열 병합 시 오른쪽 배열의 원소 `arr[j]`가 먼저 선택될 때, 왼쪽 배열에 남아있는 원소의 수(`mid - i + 1`)만큼 역순 쌍이 발생합니다. 이를 누적하면 $O(N \log N)$에 역순 쌍 총 개수를 구할 수 있습니다 (BOJ 1517).
+
+---
+
+## 🎯 추천 연습 문제 (SWEA & Programmers & BOJ)
+
+| 플랫폼 | 문제 번호 및 제목 | 난이도 | 핵심 풀이 포인트 |
+| :--- | :--- | :---: | :--- |
+| **SWEA** | [14229. 백만 개의 정수 정렬](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AYE6nNfa-UUDFAV2) | D3 | 백만 개($10^6$)의 숫자를 $O(N \log N)$ 정렬 알고리즘(병합/퀵)으로 정렬 후 500,000번째 값 출력 |
+| **Programmers** | [가장 큰 수](https://school.programmers.co.kr/learn/courses/30/lessons/42746) | Lv.2 | 정렬의 커스텀 비교 함수(Strict Weak Ordering: `a + b > b + a`) 설계 문제 |
+| **Programmers** | [H-Index](https://school.programmers.co.kr/learn/courses/30/lessons/42747) | Lv.2 | 인용 횟수 정렬 후 인덱스 조건을 검사하는 정렬 응용 문제 |
+| **백준** | [2751. 수 정렬하기 2](https://www.acmicpc.net/problem/2751) | 실버 5 | $O(N \log N)$ 정렬 알고리즘 구현 및 검증 기본 문제 |
+| **백준** | [1517. 버블 소트](https://www.acmicpc.net/problem/1517) | 플래티넘 5 | 병합 정렬의 merge 과정에서 역순 교차 횟수(Inversion Count)를 누적하여 스왑 횟수 계산 |

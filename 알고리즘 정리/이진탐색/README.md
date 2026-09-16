@@ -59,3 +59,26 @@
         * `start > end`: 탐색 범위가 비어있게 됩니다. 루프 불변성에 따라, "만약 `x`가 존재했다면, 비어있는 이 범위 안에 있어야 한다"는 모순에 도달합니다. 이는 `x`가 원래 배열에 존재하지 않았다는 것을 의미합니다. 따라서 `-1`을 반환하는 것은 올바른 동작입니다.
 
 위의 세 단계를 통해 루프 불변성이 항상 유지됨을 알 수 있으며, 따라서 이진 탐색 알고리즘은 항상 정확한 결과를 반환함을 증명할 수 있습니다.
+
+
+---
+
+## 💡 코딩테스트 실전 팁 (Cheat Sheet)
+1. **C++ STL 200% 활용하기**:
+   - `binary_search(v.begin(), v.end(), target)`: 존재 여부 `bool` 반환.
+   - `lower_bound(v.begin(), v.end(), target)`: `target` **이상**인 첫 번째 위치의 이터레이터 반환.
+   - `upper_bound(v.begin(), v.end(), target)`: `target` **초과**인 첫 번째 위치의 이터레이터 반환.
+   - **원소 개수 세기**: `upper_bound(...) - lower_bound(...)` ($O(\log N)$에 빈도수 계산 완료!)
+2. **반드시 정렬된 상태여야 함**: 이진 탐색 함수를 호출하기 전에 `sort()`가 선행되었는지 항상 점검하세요.
+3. **인덱스 오버플로우 방지**: `mid = (start + end) / 2` 대신 `mid = start + (end - start) / 2`를 쓰면 덧셈 오버플로우를 예방할 수 있습니다.
+
+---
+
+## 🎯 추천 연습 문제 (SWEA & Programmers & BOJ)
+
+| 플랫폼 | 문제 번호 및 제목 | 난이도 | 핵심 풀이 포인트 |
+| :--- | :--- | :---: | :--- |
+| **Programmers** | [순위 검색](https://school.programmers.co.kr/learn/courses/30/lessons/72411) | Lv.2 | 2021 카카오 블라인드 기출. 다중 조건 해시 맵 + 점수 배열 정렬 후 `lower_bound`로 기준 점수 이상 지원자 수 $O(\log N)$ 계산 |
+| **Programmers** | [예산](https://school.programmers.co.kr/learn/courses/30/lessons/12982) | Lv.1 | 신청 금액 정렬 후 이진 탐색 또는 그리디로 최대 지원 부서 수 계산 |
+| **백준** | [1920. 수 찾기](https://www.acmicpc.net/problem/1920) | 실버 4 | 정렬 후 특정 수가 존재하는지 $O(\log N)$에 찾는 기본 문제 |
+| **백준** | [10816. 숫자 카드 2](https://www.acmicpc.net/problem/10816) | 실버 4 | `upper_bound - lower_bound`를 이용한 원소 개수 카운팅 정석 |

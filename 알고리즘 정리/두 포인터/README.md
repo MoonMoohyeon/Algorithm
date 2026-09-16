@@ -66,3 +66,27 @@ def two_pointer_sum(arr, target):
 두 시나리오 모두 **모순**이 발생하므로, "알고리즘이 정답 쌍을 찾지 못하고 지나친다"는 원래의 가정은 **거짓**입니다.
 
 따라서 투 포인터 알고리즘은 매 단계에서 정답이 될 수 없는 선택지를 **안전하게(safely)** 배제하며, 만약 해답이 존재한다면 반드시 그 해답을 찾게 됩니다. 이것이 투 포인터 알고리즘의 **정확성**을 보장합니다.
+
+
+---
+
+## 💡 코딩테스트 실전 팁 (Cheat Sheet)
+1. **두 포인터의 두 가지 패턴**:
+   - **양 끝에서 마주보고 좁혀오기**: 정렬된 배열에서 두 수의 합/차를 비교할 때 사용 (예: BOJ 2470 두 용액, Programmers 구명보트).
+   - **같은 방향으로 진행하기 (슬라이딩 윈도우)**: 부분 수열의 합이나 특정 구간의 상태를 유지하며 윈도우 크기를 조절할 때 사용 (예: BOJ 2003, Programmers 보석 쇼핑).
+2. **슬라이딩 윈도우 포인터 이동 규칙**:
+   - `sum < M`: 오른쪽 포인터 `right`를 전진시켜 합을 증가시킴 (`sum += arr[right++]`).
+   - `sum >= M`: 왼쪽 포인터 `left`를 전진시켜 합을 감소시킴 (`sum -= arr[left++]`).
+3. **인덱스 범위 주의**: `while (right < N)`과 내부 `while (sum > M && left <= right)` 조건을 확실히 두어 Out-of-bounds를 방지합니다.
+
+---
+
+## 🎯 추천 연습 문제 (SWEA & Programmers & BOJ)
+
+| 플랫폼 | 문제 번호 및 제목 | 난이도 | 핵심 풀이 포인트 |
+| :--- | :--- | :---: | :--- |
+| **Programmers** | [구명보트](https://school.programmers.co.kr/learn/courses/30/lessons/42885) | Lv.2 | 몸무게 정렬 후 가장 무거운 사람 + 가장 가벼운 사람을 매칭하는 양 끝 투 포인터 |
+| **Programmers** | [보석 쇼핑](https://school.programmers.co.kr/learn/courses/30/lessons/67258) | Lv.3 | 2020 카카오 인턴십 기출. 해시 맵 + 슬라이딩 윈도우로 모든 보석을 포함하는 최단 구간 탐색 |
+| **Programmers** | [두 큐 합 같게 만들기](https://school.programmers.co.kr/learn/courses/30/lessons/118667) | Lv.2 | 2022 카카오 인턴십 기출. 두 큐를 이어붙인 원형 배열에서 투 포인터로 합 균등 분할 탐색 |
+| **백준** | [2003. 수들의 합 2](https://www.acmicpc.net/problem/2003) | 실버 4 | 같은 방향 슬라이딩 윈도우 부분합 $M$ 탐색 기본 문제 |
+| **백준** | [2470. 두 용액](https://www.acmicpc.net/problem/2470) | 골드 5 | 오름차순 정렬 후 양 끝에서 0에 가장 가까운 두 용액의 합 탐색 |

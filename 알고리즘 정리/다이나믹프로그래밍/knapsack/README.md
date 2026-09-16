@@ -70,3 +70,31 @@
 
 **결론:**
 기저 단계가 참이고, $P(k)$가 참일 때 $P(k+1)$도 참이므로, 수학적 귀납법에 의해 모든 $i \\in [0, N]$에 대해 명제 $P(i)$는 참입니다. 따라서 최종적으로 $DP[N][K]$는 문제의 정답(최적해)을 담고 있음이 증명됩니다.
+
+
+---
+
+## 💡 코딩테스트 실전 팁 (Cheat Sheet)
+1. **1차원 배열 공간 최적화 (뒤에서부터 채우기)**:
+   - $DP[i][w]$ 2차원 배열 대신 $DP[w]$ 1차원 배열 하나로 해결 가능합니다.
+   - 단, 같은 물건이 중복 선택되지 않도록 **무게 루프를 역순($w = K \dots weight[i]$)으로 순회**해야 합니다!
+   ```cpp
+   for (int i = 0; i < N; i++) {
+       for (int w = K; w >= weight[i]; w--) {
+           dp[w] = max(dp[w], dp[w - weight[i]] + value[i]);
+       }
+   }
+   ```
+2. **동전 교환(무한 사용)과의 차이**:
+   - 각 아이템을 무제한 사용할 수 있는 언바운디드 냅색(Coin Change)은 무게 루프를 **정방향($w = weight[i] \dots K$)**으로 순회합니다.
+
+---
+
+## 🎯 추천 연습 문제 (SWEA & Programmers & BOJ)
+
+| 플랫폼 | 문제 번호 및 제목 | 난이도 | 핵심 풀이 포인트 |
+| :--- | :--- | :---: | :--- |
+| **SWEA** | [3282. 0/1 Knapsack](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AWBJaHFKcNYDFAWr) | D3 | 배낭 용량과 물건들의 부피/가치가 주어지는 0/1 배낭 표준 문제 |
+| **백준** | [12865. 평범한 배낭](https://www.acmicpc.net/problem/12865) | 골드 5 | 0/1 Knapsack 알고리즘의 정석이자 국내 코테 최다 출제 유형 |
+| **Programmers** | [정수 삼각형](https://school.programmers.co.kr/learn/courses/30/lessons/43105) | Lv.3 | 2차원 DP 테이블 누적 최댓값 탐색 기본 문제 |
+| **Programmers** | [등굣길](https://school.programmers.co.kr/learn/courses/30/lessons/42898) | Lv.3 | 장애물이 있는 격자에서 최단 경로 경우의 수 DP 누적 |
